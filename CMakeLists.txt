@@ -4,5 +4,7 @@ project(sound_processor VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(sound_processor src/main.cpp)
+add_executable(sound_processor src/main.cpp
+    src/ArgsParser/ArgsParser.cpp
+    src/ArgsParser/ArgsParser.h)
 
