@@ -43,6 +43,18 @@ private:
     char* _inFileName = nullptr;
     char* _outFileName = nullptr;
     std::vector<FilterDescriptor> _filterDescriptors;
+
+    void addCurrentFilter(std::size_t& paramSize, char**& paramStart,
+                          char*& filterName)
+    {
+        if(filterName)
+        {
+            _filterDescriptors.emplace_back(filterName, paramStart, paramSize);
+            paramSize = 0;
+            paramStart = nullptr;
+            filterName = nullptr;
+        }
+    }
 };
 
 #endif
