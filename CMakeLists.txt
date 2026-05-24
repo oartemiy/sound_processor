@@ -9,20 +9,20 @@ enable_testing()
 
 find_package(Catch2 3 REQUIRED)
 
-set(PARSER_SOURCES src/ArgsParser/ArgsParser.cpp)
-set(WAVEFORM_SOURCES src/Waveform/Waveform.cpp)
+set(PARSER_SOURCES src/ArgsParser.cpp)
+set(WAVFILE_SOURCES src/WavFile.cpp)
 
 add_executable(sound_processor_tests 
     tests/test_arg_parser.cpp
     ${PARSER_SOURCES}
-    ${WAVEFORM_SOURCES}
+    ${WAVFILE_SOURCES}
 )
 
 
 add_executable(sound_processor 
     src/main.cpp
     ${PARSER_SOURCES}
-    ${WAVEFORM_SOURCES}
+    ${WAVFILE_SOURCES}
 )
 
 target_link_libraries(sound_processor_tests PRIVATE Catch2::Catch2WithMain)
