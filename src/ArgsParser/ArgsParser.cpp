@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <cstring>
 
-bool isNumber(const char* str)
+bool isNumber(const char* str) noexcept
 {
     if(!str || !*str)
         return false;
@@ -28,9 +28,19 @@ bool isNumber(const char* str)
     return hasDigit;
 }
 
-inline bool isOption(const char* str)
+inline bool isOption(const char* str) noexcept
 {
-    return str && str[0] == '-' && str[1] != '\0' && !isNumber(str);
+    return str != nullptr && str[0] == '-' && str[1] != '\0' && !isNumber(str);
+}
+
+inline char* getNextValue(int argc, char** argv, int currentIndex) noexcept
+{
+    if(currentIndex + 1 >= argc)
+        return nullptr;
+    char* candidate = argv[currentIndex + 1];
+    if(isOption(candidate))
+        return nullptr;
+    return candidate;
 }
 
 ArgsParser::Result ArgsParser::parse(int argc, char* argv[])
@@ -41,70 +51,53 @@ ArgsParser::Result ArgsParser::parse(int argc, char* argv[])
     char* filterName = nullptr;
     std::size_t paramSize = 0;
     char** paramStart = nullptr;
+
     for(int i = 1; i < argc; ++i)
     {
         if(std::strcmp(argv[i], "-i") == 0)
         {
             addCurrentFilter(paramSize, paramStart, filterName);
             if(_inFileName)  // -i option 2 times -> bad
-            {
                 return Result::badArgs;
-            }
-            else if(i + 1 != argc &&
-                    !isOption(argv[i + 1]))  // can't be a start of new option
-            {
-                _inFileName = argv[i + 1];
-                ++i;
-            }
-            else
-            {
+            char* value = getNextValue(argc, argv, i);
+            if(!value)
                 return Result::badArgs;
-            }
+            _inFileName = value;
+            ++i;
         }
         else if(std::strcmp(argv[i], "-o") == 0)
         {
             addCurrentFilter(paramSize, paramStart, filterName);
             if(_outFileName)  // -o option 2 times -> bad
-            {
                 return Result::badArgs;
-            }
-            else if(i + 1 != argc &&
-                    !isOption(argv[i + 1]))  // can't be a start of new option
-            {
-                _outFileName = argv[i + 1];
-                ++i;
-            }
-            else
-            {
+            char* value = getNextValue(argc, argv, i);
+            if(!value)
                 return Result::badArgs;
-            }
+            _outFileName = value;
+            ++i;
         }
         else if(std::strcmp(argv[i], "-f") == 0)
         {
             addCurrentFilter(paramSize, paramStart, filterName);
-            if(i + 1 != argc &&
-               !isOption(argv[i + 1]))  // can't be a start of new option
-            {
-                filterName = argv[i + 1];
-                // TODO: improve: may be filters without params
-                paramStart = argv + i + 2;
-                paramSize = 0;
-                ++i;
-            }
-            else
-            {
+
+            char* value = getNextValue(argc, argv, i);
+            if(!value)
                 return Result::badArgs;
-            }
+            filterName = value;
+            paramStart = (i + 2 < argc) ? argv + i + 2 : nullptr;
+            paramSize = 0;
+            ++i;
         }
-        else if(argv[i][0] == '-' &&
-                !isNumber(argv[i]))  // not permited options
-        {
+        else if(isOption(argv[i]))  // not permited options
             return Result::badArgs;
-        }
-        else
-        {
+        else if(filterName &&
+                (isNumber(argv[i]) ||
+                 argv[i][0] !=
+                     '-'))  // filter param started and it can't be an option
             ++paramSize;
-        }
+
+        else
+            return Result::badArgs;
     }
     addCurrentFilter(paramSize, paramStart, filterName);
     return Result::ok;

@@ -4,6 +4,7 @@ a.out
 *.out
 *.a
 *.o
+.env
 .vscode/
 build
 out

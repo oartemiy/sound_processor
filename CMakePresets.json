@@ -4,7 +4,7 @@
         {
             "name": "debug",
             "displayName": "Debug Preset",
-            "description": "Sets Ninja generator, build and install directory",
+            "description": "Sets Ninja generator, build, vcpkg manifest mode",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "cacheVariables": {
@@ -12,15 +12,26 @@
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
                 "CMAKE_COLOR_DIAGNOSTICS": "ON",
                 "CMAKE_CXX_STANDARD_REQUIRED": "ON",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_TOOLCHAIN_FILE": "$penv{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "$penv{VCPKG_TRIPLET}"
             }
         }
     ],
     "buildPresets": [
-    {
-      "name": "debug",
-      "configurePreset": "debug",
-      "jobs": 10
-    }
-  ]
+        {
+            "name": "debug",
+            "configurePreset": "debug",
+            "jobs": 10
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        }
+    ]
 }
