@@ -27,8 +27,6 @@ public:
         }
     };
 
-    ArgsParser() = default;
-
     Result parse(int argc, char* argv[]);
 
     const char* getInFileName() const { return _inFileName; }

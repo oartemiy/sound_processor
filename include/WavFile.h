@@ -3,6 +3,7 @@
 
 #include "Waveform.h"
 #include <cstdint>
+#include <memory>
 
 
 class WavFile
@@ -42,7 +43,9 @@ public:
         missingData,
         unsupportedFormat,
         ioError,
-        sizeMismatch
+        sizeMismatch,
+        memoryError,
+        unknownError
     };
 
     // NOTE: path != nullptr

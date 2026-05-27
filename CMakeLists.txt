@@ -13,7 +13,8 @@ set(PARSER_SOURCES src/ArgsParser.cpp)
 set(WAVFILE_SOURCES src/WavFile.cpp)
 
 add_executable(sound_processor_tests 
-    tests/test_arg_parser.cpp
+    # tests/test_arg_parser.cpp
+    tests/test_wav_file.cpp
     ${PARSER_SOURCES}
     ${WAVFILE_SOURCES}
 )

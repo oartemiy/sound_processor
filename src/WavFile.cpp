@@ -2,7 +2,9 @@
 #include "Waveform.h"
 #include <cstdint>
 #include <cstring>
+#include <exception>
 #include <fstream>
+#include <new>
 
 WavFile::WavError WavFile::read(const char* path, Waveform& outForm)
 {
@@ -52,7 +54,21 @@ WavFile::WavError WavFile::read(const char* path, Waveform& outForm)
                 return WavError::invalidRiff;
             if(chunkSize % sizeof(std::int16_t) != 0)
                 return WavError::sizeMismatch;
-            outForm.data.resize(chunkSize / sizeof(std::int16_t));
+
+            try // max wav file size is 4 GB
+            {
+                // https://en.cppreference.com/cpp/container/vector/resize
+                outForm.data.resize(chunkSize / sizeof(std::int16_t));
+            }
+            catch(std::bad_alloc& err)
+            {
+                return WavError::memoryError;
+            }
+            catch(std::exception& err)
+            {
+                return WavError::unknownError;
+            }
+
             if(!fin.read(reinterpret_cast<char*>(outForm.data.data()),
                          chunkSize))
                 return WavError::ioError;
