@@ -3,7 +3,6 @@
 
 #include "Waveform.h"
 #include <cstdint>
-#include <memory>
 
 
 class WavFile
