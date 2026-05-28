@@ -2,7 +2,6 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
-#include <iostream>
 
 bool LowpassFilter::apply(Waveform& sound)
 {

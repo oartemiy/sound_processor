@@ -3,7 +3,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
-#include <new>
 #include <vector>
 
 bool SilenceFilter::apply(Waveform& sound)
