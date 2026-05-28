@@ -8,6 +8,7 @@
 static std::size_t memoryLimit = 0;
 static std::size_t totalAlloc = 0;
 
+// NOTE: to check momory error
 void* operator new(std::size_t size)
 {
     if(memoryLimit > 0 && totalAlloc + size > memoryLimit)

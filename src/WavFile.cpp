@@ -103,10 +103,11 @@ WavFile::WavError WavFile::write(const char* path, const Waveform& inForm)
     auto riffSize =
         4 + (8 + fmtPayloadSize) + (8 + dataSize);  // "WAVE" + "fmt" + data
 
-    constexpr static std::uint32_t RIFF = 0x52494646u;
-    constexpr static std::uint32_t WAVE = 0x57415645u;
-    constexpr static std::uint32_t FMT = 0x666d7420u;
-    constexpr static std::uint32_t DATA = 0x64617461u;
+    // Big Endian -> write -> Little endian
+    constexpr static std::uint32_t RIFF = 0x46464952u; // "RIFF"
+    constexpr static std::uint32_t WAVE = 0x45564157u; // "WAVE"
+    constexpr static std::uint32_t FMT = 0x20746d66u; // "FMT "
+    constexpr static std::uint32_t DATA = 0x61746164u; // "DATA "
 
     RiffHeader riffHdr = {RIFF, riffSize, WAVE};
     FmtHeader fmtHdr = {FMT,

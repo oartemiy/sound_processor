@@ -1,5 +1,4 @@
-#include "ArgsParser.h"
-#include <iostream>
+#include "Filter/Filter.h"
 
 int main(int argc, char* argv[])
 {
