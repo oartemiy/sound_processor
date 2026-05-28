@@ -1,48 +1,52 @@
 #include "Filter/SilenceFilter.h"
+#include <cassert>
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+#include <new>
+#include <vector>
 
 bool SilenceFilter::apply(Waveform& sound)
 {
     // Work in seconds
     auto scaleFactor = (std::strcmp(_unit, "ms") == 0) ? 0.001 : 1.0;
-    double startSec = _start * scaleFactor;
-    double endSec = _end * scaleFactor;
-    if(endSec <= startSec)
-        return true;
-
-    double startFrameDouble = startSec * sound.dwSamplesPerSec;
-    double endFrameDouble = endSec * sound.dwSamplesPerSec;
-
-    auto startFrame = static_cast<std::size_t>(startFrameDouble);
-    auto cntSilenceFrame =
-        static_cast<std::size_t>(endFrameDouble - startFrameDouble + 0.5);
-    if(cntSilenceFrame == 0)
-        return true;
+    auto startSec = _start * scaleFactor;
+    auto endSec = _end * scaleFactor;
+    if(endSec < startSec)
+        return false;
+    // 1 Frame = Channel size * SamplePerSecond
     try
     {
-        // 1 Sample = channels * frame, includes channels count
-        std::size_t totalFramesOld = sound.frameCount();
-        std::size_t startSample = startFrame * sound.wChannels;
-        std::size_t silenceSamples = cntSilenceFrame * sound.wChannels;
+        double startSample = startSec * sound.dwSamplesPerSec;
+        double endSample = endSec * sound.dwSamplesPerSec;
 
+        double startFrameDouble = startSample * sound.wChannels;
+        double silenceFrameDuractionDouble =
+            (endSample - startSample + 0.5) * sound.wChannels;  // round up
+
+        auto startFrame = static_cast<std::size_t>(startFrameDouble);
+        auto silenceFramesDuraction =
+            static_cast<std::size_t>(silenceFrameDuractionDouble);
+
+        std::size_t newSize = sound.data.size() + silenceFramesDuraction;
         std::vector<std::int16_t> newData;
-        newData.reserve(sound.data.size() + silenceSamples);
-
-        if(startFrame >= totalFramesOld)
+        newData.reserve(newSize);
+        if(startSec >= sound.durationSeconds())
         {
-            newData = sound.data;
-            newData.insert(newData.end(), silenceSamples, 0);
+            newData = sound.data;  // copy
+            newData.insert(newData.end(), silenceFramesDuraction, 0);
         }
         else
         {
             newData.insert(newData.end(), sound.data.begin(),
-                           sound.data.begin() + startSample);
-            newData.insert(newData.end(), silenceSamples, 0);
-            newData.insert(newData.end(), sound.data.begin() + startSample,
+                           sound.data.begin() + startFrame);
+            newData.insert(newData.end(), silenceFramesDuraction, 0);
+            newData.insert(newData.end(), sound.data.begin() + startFrame,
                            sound.data.end());
         }
         sound.data = std::move(newData);
     }
-    catch(std::bad_alloc& err)
+    catch(...)
     {
         return false;
     }

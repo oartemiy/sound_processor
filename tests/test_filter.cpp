@@ -181,6 +181,34 @@ TEST_CASE("test TimestretchFilter (mono)")
     }
 }
 
+TEST_CASE("TimestretchFilter stereo") {
+    Waveform stereo;
+    stereo.wChannels = 2;
+    stereo.dwSamplesPerSec = 10;
+    stereo.data = {100, 200, 300, 400, 500, 600};
+
+    SECTION("stretch factor 2.0") {
+        TimestretchFilter fil(2.0);
+        fil.apply(stereo);
+        std::vector<int16_t> expected = {
+            100, 200,   // frame 0
+            200, 300,   // frame 1
+            300, 400,   // frame 2
+            400, 500,   // frame 3
+            500, 600,   // frame 4
+            500, 600    // frame 5
+        };
+        requireNear(stereo.data, expected, 1);
+    }
+
+    SECTION("compress factor 0.5") {
+        TimestretchFilter fil(0.5);
+        fil.apply(stereo);
+        std::vector<int16_t> expected = {100, 200, 500, 600};
+        fil.apply(stereo);
+    }
+}
+
 TEST_CASE("test LowpassFilter")
 {
     Waveform sound;
@@ -192,13 +220,7 @@ TEST_CASE("test LowpassFilter")
     {
         LowpassFilter fil(3);
         fil.apply(sound);
-        // radius=1
-        // i0: avg(0,0,100)=33.33 -> 33
-        // i1: avg(0,0,100,0)?? wait: indices 0..2 -> (0+0+100)/3=33.33 ->33
-        // i2: avg(0,100,0)=33.33 ->33
-        // i3: avg(100,0,0)=33.33 ->33
-        // i4: avg(0,0,0)=0
-        requireNear(sound.data, {33, 33, 33, 33, 0}, 1);
+        requireNear(sound.data, {0, 33, 33, 33, 0}, 1);
     }
 
     SECTION("window_size = 1 -> unchanged")
@@ -213,10 +235,60 @@ TEST_CASE("test LowpassFilter")
     {
         LowpassFilter fil(5);
         fil.apply(sound);
-        // all samples averaged over entire array (0+0+100+0+0)/5=20
         requireNear(sound.data, {20, 20, 20, 20, 20});
     }
 }
+
+TEST_CASE("LowpassFilter stereo") {
+    Waveform sound;
+    sound.wChannels = 2;
+    sound.dwSamplesPerSec = 1000;
+    // 3 frames: (L0=10,R0=100), (L1=20,R1=200), (L2=30,R2=300)
+    sound.data = {10, 100, 20, 200, 30, 300};
+
+    SECTION("window_size=3") {
+        LowpassFilter fil(3);
+        fil.apply(sound);
+        // radius=1
+        // 1.
+        //   i0: (10,10,20)/3=13.33->13
+        //   i1: (10,20,30)/3=20
+        //   i2: (20,30,30)/3=26.67->27
+        // 2.
+        //   i0: (100,100,200)/3=133.33->133
+        //   i1: (100,200,300)/3=200
+        //   i2: (200,300,300)/3=266.67->267
+        std::vector<int16_t> expected = {13, 133, 20, 200, 27, 267};
+        requireNear(sound.data, expected);
+    }
+    SECTION("window_size=1") {
+        LowpassFilter fil(1);
+        auto original = sound.data;
+        fil.apply(sound);
+        requireNear(sound.data, original);
+    }
+    SECTION("window_size=5 (bigger than frames)") {
+        LowpassFilter fil(5);
+        fil.apply(sound);
+        std::vector<int16_t> expected = {16, 160, 20, 200, 24, 240};
+        requireNear(sound.data, expected);
+    }
+}
+
+TEST_CASE("LowpassFilter 4 channels", "[lowpass][multichannel]") {
+    Waveform sound;
+    sound.wChannels = 4;
+    sound.dwSamplesPerSec = 1000;
+    // 2 frames: 0: 10,20,30,40; 1: 100,200,300,400
+    sound.data = {10,20,30,40, 100,200,300,400};
+    SECTION("window_size=3 (radius=1)") {
+        LowpassFilter fil(3);
+        fil.apply(sound);
+        std::vector<int16_t> expected = {40,80,120,160, 70,140,210,280};
+        requireNear(sound.data, expected);
+    }
+}
+
 
 TEST_CASE("test SinGenFilter")
 {
