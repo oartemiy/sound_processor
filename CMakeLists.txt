@@ -28,6 +28,23 @@ set(FILTER_SOURCES
                 src/Filter/FmGenFilter.cpp
 )
 
+add_compile_options(
+    -Wall
+    -Wextra
+    -g
+    -Wimplicit-fallthrough 
+    -O0
+    -Werror=return-type
+    -fsanitize=address
+    -fprofile-instr-generate
+    -fcoverage-mapping
+)
+
+add_link_options(
+    -fsanitize=address
+    -fprofile-instr-generate
+    -fcoverage-mapping
+)
 
 add_executable(sound_processor_tests 
     # tests/test_arg_parser.cpp

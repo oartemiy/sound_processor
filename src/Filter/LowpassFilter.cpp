@@ -20,7 +20,7 @@ bool LowpassFilter::apply(Waveform& sound)
             for(std::int32_t i = start; i <= end; i += sound.wChannels)
                 if(i < 0)
                     summa += sound.data[ch];
-                else if(i >= sound.data.size())
+                else if(i >= static_cast<std::int32_t>(sound.data.size()))
                     summa += sound.data[(frames - 1) * sound.wChannels + ch];
                 else
                     summa += sound.data[i];
@@ -30,9 +30,11 @@ bool LowpassFilter::apply(Waveform& sound)
             for(std::size_t i = 1; i < frames; ++i)
             {
                 summa -= sound.data[(start > 0) ? start : ch];
-                summa += sound.data[(end + sound.wChannels < sound.data.size())
-                                        ? end + sound.wChannels
-                                        : (frames - 1) * sound.wChannels + ch];
+                summa +=
+                    sound.data[(end + sound.wChannels <
+                                static_cast<std::int32_t>(sound.data.size()))
+                                   ? end + sound.wChannels
+                                   : (frames - 1) * sound.wChannels + ch];
 
                 start += sound.wChannels;
                 end += sound.wChannels;
@@ -41,7 +43,7 @@ bool LowpassFilter::apply(Waveform& sound)
                     static_cast<std::int16_t>(std::round(summa / _windowSize));
             }
         }
-        
+
         // for(std::size_t i = 0; i < newData.size(); ++i)
         //     std::cout << newData[i] << ' ';
         // std::cout << std::endl;
