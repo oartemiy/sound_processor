@@ -10,22 +10,41 @@ enable_testing()
 find_package(Catch2 3 REQUIRED)
 
 set(PARSER_SOURCES 
-                src/ArgsParser.cpp
+    src/ArgsParser.cpp
+
+    include/ArgsParser.h
 )
 
 set(WAVFILE_SOURCES 
-                src/WavFile.cpp
+    src/WavFile.cpp
+
+    include/WavFile.h
 )
 
 set(FILTER_SOURCES 
-                src/Filter/AmplFilter.cpp
-                src/Filter/LowpassFilter.cpp
-                src/Filter/NormalizeFilter.cpp
-                src/Filter/SilenceFilter.cpp
-                src/Filter/TimestretchFilter.cpp
-                src/Filter/SinGenFilter.cpp
-                src/Filter/AmGenFilter.cpp
-                src/Filter/FmGenFilter.cpp
+    src/Filter/AmplFilter.cpp
+    src/Filter/LowpassFilter.cpp
+    src/Filter/NormalizeFilter.cpp
+    src/Filter/SilenceFilter.cpp
+    src/Filter/TimestretchFilter.cpp
+    src/Filter/SinGenFilter.cpp
+    src/Filter/AmGenFilter.cpp
+    src/Filter/FmGenFilter.cpp
+
+    include/Filter/AmplFilter.h
+    include/Filter/LowpassFilter.h
+    include/Filter/NormalizeFilter.h
+    include/Filter/SilenceFilter.h
+    include/Filter/TimestretchFilter.h
+    include/Filter/SinGenFilter.h
+    include/Filter/AmGenFilter.h
+    include/Filter/FmGenFilter.h
+)
+
+set(PIPELINE_SOURCES
+    src/Pipeline.cpp
+    
+    include/Pipeline.h
 )
 
 add_compile_options(

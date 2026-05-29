@@ -12,4 +12,6 @@
 #include "AmGenFilter.h"
 #include "FmGenFilter.h"
 
+using Filter = IFilter;
+
 #endif
