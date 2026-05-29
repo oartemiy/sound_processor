@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <new>
 
-IFilter::State LowpassFilter::apply(Waveform& sound)
+IFilter::State LowpassFilter::apply(Waveform& sound) noexcept
 {
     std::size_t radius = _windowSize / 2;
     std::size_t frames = sound.frameCount();

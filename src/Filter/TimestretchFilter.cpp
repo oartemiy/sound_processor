@@ -2,7 +2,7 @@
 #include "Filter/IFilter.h"
 #include <cstddef>
 
-IFilter::State TimestretchFilter::apply(Waveform& sound)
+IFilter::State TimestretchFilter::apply(Waveform& sound) noexcept
 {
     std::size_t oldSize = sound.data.size();
     if(oldSize == 0)

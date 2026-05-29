@@ -16,7 +16,7 @@ public:
 
     ~AmGenFilter() override {}
 
-    State apply(Waveform& sound) override;
+    State apply(Waveform& sound) noexcept override;
 
 protected:
     double _amplitude;

@@ -10,7 +10,7 @@ public:
 
     ~LowpassFilter() override {}
 
-    State apply(Waveform& sound) override;
+    State apply(Waveform& sound) noexcept override;
 
 protected:
     std::size_t _windowSize;

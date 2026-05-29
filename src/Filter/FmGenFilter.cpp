@@ -4,7 +4,7 @@
 #include <cmath>
 #include <cstddef>
 
-IFilter::State FmGenFilter::apply(Waveform& sound)
+IFilter::State FmGenFilter::apply(Waveform& sound) noexcept
 {
     std::size_t newSize =
         std::round(_durationMs / 1000.0 * sound.dwSamplesPerSec);

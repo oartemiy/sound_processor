@@ -6,7 +6,7 @@
 #include <cstring>
 #include <vector>
 
-IFilter::State SilenceFilter::apply(Waveform& sound)
+IFilter::State SilenceFilter::apply(Waveform& sound) noexcept
 {
     // Work in seconds
     auto scaleFactor = (std::strcmp(_unit, "ms") == 0) ? 0.001 : 1.0;

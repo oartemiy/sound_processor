@@ -55,14 +55,10 @@ add_compile_options(
     -O0
     -Werror=return-type
     -fsanitize=address
-    -fprofile-instr-generate
-    -fcoverage-mapping
 )
 
 add_link_options(
     -fsanitize=address
-    -fprofile-instr-generate
-    -fcoverage-mapping
 )
 
 add_executable(sound_processor_tests 

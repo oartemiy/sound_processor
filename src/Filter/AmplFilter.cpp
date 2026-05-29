@@ -1,7 +1,7 @@
 #include "Filter/AmplFilter.h"
 #include "Filter/IFilter.h"
 
-IFilter::State AmplFilter::apply(Waveform& sound)
+IFilter::State AmplFilter::apply(Waveform& sound) noexcept
 {
     if(sound.data.empty())
         return State::emptyWAV;

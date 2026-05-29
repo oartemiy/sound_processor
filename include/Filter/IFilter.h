@@ -19,9 +19,10 @@ public:
     
     virtual ~IFilter() {}
 
-    virtual State apply(Waveform& sound) = 0;
-
     
+    [[nodiscard]] virtual State apply(Waveform& sound) noexcept = 0;
+
+    // [[nodiscard]] derives for other filters
 };
 
 

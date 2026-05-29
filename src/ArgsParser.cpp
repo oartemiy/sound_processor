@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstring>
 
+// TODO: chang implementation, because of differnet double number form
 bool isNumber(const char* str) noexcept
 {
     if(!str || !*str)

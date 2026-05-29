@@ -1,7 +1,7 @@
 #include "Filter/NormalizeFilter.h"
 #include "Filter/IFilter.h"
 
-IFilter::State NormalizeFilter::apply(Waveform& sound)
+IFilter::State NormalizeFilter::apply(Waveform& sound) noexcept
 {
     auto currentPeak = sound.getAbsMax();
     if(currentPeak == sound.data.end())

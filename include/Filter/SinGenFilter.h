@@ -13,7 +13,7 @@ public:
 
     ~SinGenFilter() override {}
 
-    State apply(Waveform& sound) override;
+    State apply(Waveform& sound) noexcept override;
 
 protected:
     double _frequencyHz;
