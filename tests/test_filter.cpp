@@ -23,14 +23,14 @@ TEST_CASE("test AmplFilter")
     SECTION("factor = 1.0 -> unchanged")
     {
         AmplFilter fil(1.0);
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
         requireNear(sound.data, {1000, 2000, 3000, 32767, -32768});
     }
 
     SECTION("factor = 2.0 -> multiply and clamp")
     {
         AmplFilter fil(2.0);
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
         // 1000*2=2000, 2000*2=4000, 3000*2=6000, 32767*2=65534 clamp to 32767,
         // -32768*2=-65536 clamp to -32768
         requireNear(sound.data, {2000, 4000, 6000, 32767, -32768});
@@ -39,7 +39,7 @@ TEST_CASE("test AmplFilter")
     SECTION("factor = 0.5 -> reduce")
     {
         AmplFilter fil(0.5);
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
         requireNear(sound.data, {500, 1000, 1500, 16383, -16384});
     }
 }
@@ -54,7 +54,7 @@ TEST_CASE("test NormalizeFilter", "[filter]")
     SECTION("default peak = 1.0")
     {
         NormalizeFilter fil(1.0);
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
         // currentPeak = 4000, scale = 32767/4000 ≈ 8.19175
         int16_t expected1 =
             static_cast<int16_t>(std::round(1000 * 32767.0 / 4000.0));  // 8191
@@ -68,7 +68,7 @@ TEST_CASE("test NormalizeFilter", "[filter]")
     SECTION("peak = 0.5")
     {
         NormalizeFilter fil(0.5);
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
         // scale = (0.5*32767)/4000 ≈ 4.095875
         int16_t expected1 = static_cast<int16_t>(
             std::round(1000 * 0.5 * 32767.0 / 4000.0));  // 4095
@@ -84,7 +84,7 @@ TEST_CASE("test NormalizeFilter", "[filter]")
         Waveform empty;
         empty.data.clear();
         NormalizeFilter fil(1.0);
-        fil.apply(empty);
+        REQUIRE(fil.apply(empty) == Filter::State::emptyWAV);
         REQUIRE(empty.data.empty());
     }
 
@@ -92,7 +92,7 @@ TEST_CASE("test NormalizeFilter", "[filter]")
     {
         sound.data = {0, 0, 0};
         NormalizeFilter fil(1.0);
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::normalizationFailed);
         requireNear(sound.data, {0, 0, 0});
     }
 }
@@ -108,7 +108,8 @@ TEST_CASE("test SilenceFilter")
     {
         SilenceFilter fil("ms", 2.0,
                           4.0);  // from 2ms to 4ms → 2 samples of silence
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
+
         // Expected: first 2 samples (0-1ms) = 10,20; then 2 zeros; then rest
         // from old index 2: 30,40,50
         requireNear(sound.data, {10, 20, 0, 0, 30, 40, 50});
@@ -118,14 +119,16 @@ TEST_CASE("test SilenceFilter")
     {
         SilenceFilter fil("sec", 0.0,
                           0.002);  // 0 to 2ms → 2 zeros at beginning
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
+
         requireNear(sound.data, {0, 0, 10, 20, 30, 40, 50});
     }
 
     SECTION("insert beyond end")
     {
         SilenceFilter fil("ms", 6.0, 8.0);  // start after end → append silence
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
+
         REQUIRE(sound.data.size() == 5 + 2);
         requireNear(sound.data, {10, 20, 30, 40, 50, 0, 0});
     }
@@ -134,7 +137,8 @@ TEST_CASE("test SilenceFilter")
     {
         SilenceFilter fil("ms", 2.0, 2.0);
         auto old = sound.data;
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::invalidArgs);
+
         requireNear(sound.data, old);  // unchanged
     }
 }
@@ -149,7 +153,7 @@ TEST_CASE("test TimestretchFilter (mono)")
     SECTION("stretch factor 2.0")
     {
         TimestretchFilter fil(2.0);
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
         // newSize = round(3*2)=6
         // i:0 pos=0.0 -> 100
         // i:1 pos=0.5 -> 100*0.5+200*0.5=150
@@ -164,7 +168,8 @@ TEST_CASE("test TimestretchFilter (mono)")
     {
         TimestretchFilter fil(0.5);
         sound.data = {100, 200, 300, 400};
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
+
         // newSize = round(4*0.5)=2
         // i=0 pos=0 -> 100
         // i=1 pos=2 -> l=2 frac=0 -> 300
@@ -175,35 +180,39 @@ TEST_CASE("test TimestretchFilter (mono)")
     {
         TimestretchFilter fil(1.0);
         auto old = sound.data;
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
+
         REQUIRE(sound.data.size() == old.size());
         requireNear(sound.data, old);
     }
 }
 
-TEST_CASE("TimestretchFilter stereo") {
+TEST_CASE("TimestretchFilter stereo")
+{
     Waveform stereo;
     stereo.wChannels = 2;
     stereo.dwSamplesPerSec = 10;
     stereo.data = {100, 200, 300, 400, 500, 600};
 
-    SECTION("stretch factor 2.0") {
+    SECTION("stretch factor 2.0")
+    {
         TimestretchFilter fil(2.0);
-        fil.apply(stereo);
+        CHECK(fil.apply(stereo) == Filter::State::applied);
         std::vector<int16_t> expected = {
-            100, 200,   // frame 0
-            200, 300,   // frame 1
-            300, 400,   // frame 2
-            400, 500,   // frame 3
-            500, 600,   // frame 4
-            500, 600    // frame 5
+            100, 200,  // frame 0
+            200, 300,  // frame 1
+            300, 400,  // frame 2
+            400, 500,  // frame 3
+            500, 600,  // frame 4
+            500, 600   // frame 5
         };
         requireNear(stereo.data, expected, 1);
     }
 
-    SECTION("compress factor 0.5") {
+    SECTION("compress factor 0.5")
+    {
         TimestretchFilter fil(0.5);
-        fil.apply(stereo);
+        CHECK(fil.apply(stereo) == Filter::State::applied);
         std::vector<int16_t> expected = {100, 200, 500, 600};
         fil.apply(stereo);
     }
@@ -219,7 +228,8 @@ TEST_CASE("test LowpassFilter")
     SECTION("window_size = 3")
     {
         LowpassFilter fil(3);
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
+
         requireNear(sound.data, {0, 33, 33, 33, 0}, 1);
     }
 
@@ -227,28 +237,30 @@ TEST_CASE("test LowpassFilter")
     {
         LowpassFilter fil(1);
         auto old = sound.data;
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
         requireNear(sound.data, old);
     }
 
     SECTION("window_size = 5 (odd, larger than length)")
     {
         LowpassFilter fil(5);
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
         requireNear(sound.data, {20, 20, 20, 20, 20});
     }
 }
 
-TEST_CASE("LowpassFilter stereo") {
+TEST_CASE("LowpassFilter stereo")
+{
     Waveform sound;
     sound.wChannels = 2;
     sound.dwSamplesPerSec = 1000;
     // 3 frames: (L0=10,R0=100), (L1=20,R1=200), (L2=30,R2=300)
     sound.data = {10, 100, 20, 200, 30, 300};
 
-    SECTION("window_size=3") {
+    SECTION("window_size=3")
+    {
         LowpassFilter fil(3);
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
         // radius=1
         // 1.
         //   i0: (10,10,20)/3=13.33->13
@@ -261,34 +273,37 @@ TEST_CASE("LowpassFilter stereo") {
         std::vector<int16_t> expected = {13, 133, 20, 200, 27, 267};
         requireNear(sound.data, expected);
     }
-    SECTION("window_size=1") {
+    SECTION("window_size=1")
+    {
         LowpassFilter fil(1);
         auto original = sound.data;
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
         requireNear(sound.data, original);
     }
-    SECTION("window_size=5 (bigger than frames)") {
+    SECTION("window_size=5 (bigger than frames)")
+    {
         LowpassFilter fil(5);
-        fil.apply(sound);
+        CHECK(fil.apply(sound) == Filter::State::applied);
         std::vector<int16_t> expected = {16, 160, 20, 200, 24, 240};
         requireNear(sound.data, expected);
     }
 }
 
-TEST_CASE("LowpassFilter 4 channels", "[lowpass][multichannel]") {
+TEST_CASE("LowpassFilter 4 channels", "[lowpass][multichannel]")
+{
     Waveform sound;
     sound.wChannels = 4;
     sound.dwSamplesPerSec = 1000;
     // 2 frames: 0: 10,20,30,40; 1: 100,200,300,400
-    sound.data = {10,20,30,40, 100,200,300,400};
-    SECTION("window_size=3 (radius=1)") {
+    sound.data = {10, 20, 30, 40, 100, 200, 300, 400};
+    SECTION("window_size=3 (radius=1)")
+    {
         LowpassFilter fil(3);
-        fil.apply(sound);
-        std::vector<int16_t> expected = {40,80,120,160, 70,140,210,280};
+        CHECK(fil.apply(sound) == Filter::State::applied);
+        std::vector<int16_t> expected = {40, 80, 120, 160, 70, 140, 210, 280};
         requireNear(sound.data, expected);
     }
 }
-
 
 TEST_CASE("test SinGenFilter")
 {
@@ -296,8 +311,7 @@ TEST_CASE("test SinGenFilter")
     Waveform sound;
     sound.dwSamplesPerSec = 8000;  // low sample rate for simple test
     sound.wChannels = 1;
-    bool ok = fil.apply(sound);  // NOLINT
-    REQUIRE(ok);
+    REQUIRE(fil.apply(sound) == Filter::State::applied);
     // expected size: round(1.0 * 8000) = 8000 samples
     REQUIRE(sound.data.size() == 8000);
     // Check first few samples: sin(2*pi*440*t)
@@ -321,7 +335,7 @@ TEST_CASE("test AmGenFilter")
     Waveform sound;
     sound.dwSamplesPerSec = 8000;
     sound.wChannels = 1;
-    fil.apply(sound);
+    CHECK(fil.apply(sound) == Filter::State::applied);
     size_t expectedSamples =
         static_cast<size_t>(std::round(0.5 * 8000));  // 4000
     REQUIRE(sound.data.size() == expectedSamples);
@@ -348,8 +362,7 @@ TEST_CASE("test FmGenFilter")
     Waveform sound;
     sound.dwSamplesPerSec = 16000;
     sound.wChannels = 1;
-    bool ok = fil.apply(sound);  // NOLINT
-    REQUIRE(ok);
+    REQUIRE(fil.apply(sound) == Filter::State::applied);
     size_t expected = static_cast<size_t>(std::round(1.0 * 16000));  // 16000
     REQUIRE(sound.data.size() == expected);
     // Phase at t=0: 0 -> sin(0)=0

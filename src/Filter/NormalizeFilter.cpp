@@ -1,12 +1,15 @@
 #include "Filter/NormalizeFilter.h"
+#include "Filter/IFilter.h"
 
-bool NormalizeFilter::apply(Waveform& sound)
+IFilter::State NormalizeFilter::apply(Waveform& sound)
 {
     auto currentPeak = sound.getAbsMax();
-    if(currentPeak == sound.data.end() || *currentPeak == 0)
-        return false;
+    if(currentPeak == sound.data.end())
+        return State::emptyWAV;
+    else if(*currentPeak == 0)
+        return State::normalizationFailed;
     auto scale = _peak * Waveform::INT16_SCALE / *currentPeak;
     for(std::size_t i = 0; i < sound.data.size(); ++i)
         sound.setDouble(i, sound.getDouble(i) * scale);
-    return true;
+    return State::applied;
 }

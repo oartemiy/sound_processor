@@ -1,14 +1,16 @@
 #include "Filter/LowpassFilter.h"
+#include "Filter/IFilter.h"
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <new>
 
-bool LowpassFilter::apply(Waveform& sound)
+IFilter::State LowpassFilter::apply(Waveform& sound)
 {
     std::size_t radius = _windowSize / 2;
     std::size_t frames = sound.frameCount();
-    if(sound.data.size() == 0)
-        return false;
+    if(sound.data.empty())
+        return State::emptyWAV;
     try
     {
         std::vector<std::int16_t> newData(sound.data.size());
@@ -49,9 +51,13 @@ bool LowpassFilter::apply(Waveform& sound)
         // std::cout << std::endl;
         sound.data = std::move(newData);
     }
+    catch(std::bad_alloc& err)
+    {
+        return State::memoryError;
+    }
     catch(...)
     {
-        return false;
+        return State::unknownError;
     }
-    return true;
+    return State::applied;
 }

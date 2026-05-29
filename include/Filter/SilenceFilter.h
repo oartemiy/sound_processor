@@ -13,7 +13,7 @@ public:
 
     ~SilenceFilter() override {}
 
-    bool apply(Waveform& sound) override;
+    State apply(Waveform& sound) override;
 
 protected:
     const char* _unit;

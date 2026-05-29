@@ -1,18 +1,19 @@
 #include "Filter/SilenceFilter.h"
+#include "Filter/IFilter.h"
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <vector>
 
-bool SilenceFilter::apply(Waveform& sound)
+IFilter::State SilenceFilter::apply(Waveform& sound)
 {
     // Work in seconds
     auto scaleFactor = (std::strcmp(_unit, "ms") == 0) ? 0.001 : 1.0;
     auto startSec = _start * scaleFactor;
     auto endSec = _end * scaleFactor;
-    if(endSec < startSec)
-        return false;
+    if(endSec <= startSec)
+        return State::invalidArgs;
     // 1 Frame = Channel size * SamplePerSecond
     try
     {
@@ -45,9 +46,13 @@ bool SilenceFilter::apply(Waveform& sound)
         }
         sound.data = std::move(newData);
     }
+    catch(std::bad_alloc& err)
+    {
+        return State::memoryError;
+    }
     catch(...)
     {
-        return false;
+        return State::unknownError;
     }
-    return true;
+    return State::applied;
 }

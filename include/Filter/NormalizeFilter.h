@@ -10,7 +10,7 @@ public:
 
     ~NormalizeFilter() override {}
 
-    bool apply(Waveform& sound) override;
+    State apply(Waveform& sound) override;
 
 protected:
     double _peak;

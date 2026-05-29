@@ -1,11 +1,12 @@
 #include "Filter/TimestretchFilter.h"
+#include "Filter/IFilter.h"
 #include <cstddef>
 
-bool TimestretchFilter::apply(Waveform& sound)
+IFilter::State TimestretchFilter::apply(Waveform& sound)
 {
     std::size_t oldSize = sound.data.size();
     if(oldSize == 0)
-        return true;
+        return State::emptyWAV;
     std::size_t newSize = std::round(static_cast<double>(oldSize) * _factor);
     try
     {
@@ -37,9 +38,13 @@ bool TimestretchFilter::apply(Waveform& sound)
         }
         sound.data = std::move(newData);
     }
+    catch(std::bad_alloc& err)
+    {
+        return State::memoryError;
+    }
     catch(...)
     {
-        return false;
+        return State::unknownError;
     }
-    return true;
+    return State::applied;
 }

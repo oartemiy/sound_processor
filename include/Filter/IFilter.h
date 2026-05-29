@@ -7,9 +7,21 @@
 class IFilter
 {
 public:
+    enum class State
+    {
+        applied,
+        normalizationFailed,
+        emptyWAV,
+        invalidArgs,
+        memoryError,
+        unknownError
+    };
+    
     virtual ~IFilter() {}
 
-    virtual bool apply(Waveform& sound) = 0;
+    virtual State apply(Waveform& sound) = 0;
+
+    
 };
 
 

@@ -1,10 +1,11 @@
 #include "Filter/AmplFilter.h"
+#include "Filter/IFilter.h"
 
-bool AmplFilter::apply(Waveform& sound)
+IFilter::State AmplFilter::apply(Waveform& sound)
 {
     if(sound.data.empty())
-        return false;
+        return State::emptyWAV;
     for(std::size_t i = 0; i < sound.data.size(); ++i)
         sound.setDouble(i, sound.getDouble(i) * _ampl);
-    return true;
+    return State::applied;
 }

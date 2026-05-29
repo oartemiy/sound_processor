@@ -17,7 +17,7 @@ public:
 
     ~FmGenFilter() override {}
 
-    bool apply(Waveform& sound) override;
+    State apply(Waveform& sound) override;
 
 
 protected:

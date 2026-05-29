@@ -10,7 +10,7 @@ public:
 
     ~AmplFilter() override {}
 
-    bool apply(Waveform& sound) override;
+    State apply(Waveform& sound) override;
 
 protected:  // to save acess for derived classes
     double _ampl;
