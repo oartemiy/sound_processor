@@ -3,6 +3,7 @@
 
 #include "ArgsParser.h"
 #include "Filter/Filter.h"
+#include <memory>
 
 namespace FilterProducers {
 std::unique_ptr<Filter>
@@ -22,5 +23,7 @@ amGenFilterCreator(const ArgsParser::FilterDescriptor& descriptor);
 std::unique_ptr<Filter>
 fmGenFilterCreator(const ArgsParser::FilterDescriptor& descriptor);
 }  // namespace FilterProducers
+
+using FilterProducer = std::unique_ptr<Filter> (*) (const ArgsParser::FilterDescriptor&);
 
 #endif

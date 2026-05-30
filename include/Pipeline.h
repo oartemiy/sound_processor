@@ -11,6 +11,8 @@
 class Pipeline
 {
 public:
+    Pipeline() = default;
+    
     Pipeline(const Pipeline&) = delete;
 
     Pipeline(Pipeline&&) = default;
