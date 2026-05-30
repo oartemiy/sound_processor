@@ -11,7 +11,7 @@ std::unique_ptr<Filter> FilterProducers::silenceFilterCreator(
 {
     if(std::strcmp(descriptor.filterName, "silence") != 0)
         throw std::logic_error("Wrong descriptor for silence filter producer.");
-    if(descriptor.params.size() != 2)
+    if(descriptor.params.size() != 3)
         throw std::logic_error(
             "Wrong params number for silence filter producer.");
     try
