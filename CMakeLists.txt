@@ -47,6 +47,12 @@ set(PIPELINE_SOURCES
     include/Pipeline.h
 )
 
+set(CmdLineArgs2PipelineConverter
+    src/CmdLineArgs2PipelineConverter.cpp
+    
+    include/CmdLineArgs2PipelineConverter.h    
+)
+
 add_compile_options(
     -Wall
     -Wextra
@@ -69,7 +75,6 @@ add_executable(sound_processor_tests
     ${PARSER_SOURCES}
     ${WAVFILE_SOURCES}
     ${FILTER_SOURCES}
-
 )
 
 
