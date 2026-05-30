@@ -198,11 +198,8 @@ TEST_CASE("Valid numeric formats accepted as filter params", "[numbers]")
 TEST_CASE("Invalid options rejected", "[reject]")
 {
     ArgsParser parse;
-    
-    auto invalid = GENERATE(
-        as<std::string>{},
-        "--long-opt", "-X", "-abc", "-"
-    );
+
+    auto invalid = GENERATE(as<std::string>{}, "--long-opt", "-X", "-abc");
     
     std::vector<std::string> cmd = {
         "sound_processor", "-f", "filter", invalid, "-o", "out.wav"

@@ -3,35 +3,11 @@
 #include <cstddef>
 #include <cstring>
 
-// TODO: chang implementation, because of differnet double number form
-bool isNumber(const char* str) noexcept
-{
-    if(!str || !*str)
-        return false;
-    bool hasPoint = false;
-    bool hasDigit = false;
-    for(std::size_t i = (str[0] == '-'); str[i] != '\0'; ++i)
-    {
-        if(std::isdigit(str[i]))
-        {
-            hasDigit = true;
-            continue;
-        }
-        if(str[i] == '.')
-        {
-            if(hasPoint)
-                return false;
-            hasPoint = true;
-            continue;
-        }
-        return false;
-    }
-    return hasDigit;
-}
-
 inline bool isOption(const char* str) noexcept
 {
-    return str != nullptr && str[0] == '-' && str[1] != '\0' && !isNumber(str);
+    return str != nullptr && str[0] == '-' && str[1] != '\0' &&
+           (std::isalpha(str[1]) ||
+            (str[1] == '-' && str[2] != '\0' && std::isalpha(str[2])));
 }
 
 inline char* getNextValue(int argc, char** argv, int currentIndex) noexcept
@@ -92,9 +68,8 @@ ArgsParser::Result ArgsParser::parse(int argc, char* argv[])
         else if(isOption(argv[i]))  // not permited options
             return Result::badArgs;
         else if(filterName &&
-                (isNumber(argv[i]) ||
-                 argv[i][0] !=
-                     '-'))  // filter param started and it can't be an option
+                !isOption(
+                    argv[i]))  // filter param started and it can't be an option
             ++paramSize;
 
         else
