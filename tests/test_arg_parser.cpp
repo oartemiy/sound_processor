@@ -32,13 +32,13 @@ TEST_CASE("Example test: complex pipeline")
     auto res = parse.parse(static_cast<int>(vecArgv.size()), argv.data());
     
     REQUIRE(res == ArgsParser::Result::ok);
-    REQUIRE(parse.getFilters().size() == 2);
-    REQUIRE(parse.getFilters()[0].filterName == vecArgv[6].c_str());
-    REQUIRE(parse.getFilters()[0].params[0] == vecArgv[7].c_str());
-    REQUIRE(parse.getFilters()[1].filterName == vecArgv[9].c_str());
-    REQUIRE(parse.getFilters()[1].params[0] == vecArgv[10].c_str());
-    REQUIRE(parse.getFilters()[1].params[1] == vecArgv[11].c_str());
-    REQUIRE(parse.getFilters()[1].params[2] == vecArgv[12].c_str());
+    REQUIRE(parse.getFilterDescriptors().size() == 2);
+    REQUIRE(parse.getFilterDescriptors()[0].filterName == vecArgv[6].c_str());
+    REQUIRE(parse.getFilterDescriptors()[0].params[0] == vecArgv[7].c_str());
+    REQUIRE(parse.getFilterDescriptors()[1].filterName == vecArgv[9].c_str());
+    REQUIRE(parse.getFilterDescriptors()[1].params[0] == vecArgv[10].c_str());
+    REQUIRE(parse.getFilterDescriptors()[1].params[1] == vecArgv[11].c_str());
+    REQUIRE(parse.getFilterDescriptors()[1].params[2] == vecArgv[12].c_str());
 }
 
 TEST_CASE("No args")
@@ -60,7 +60,7 @@ TEST_CASE("-i -o options")
     REQUIRE(res == ArgsParser::Result::ok);
     REQUIRE(std::string_view{parse.getInFileName()} == "input.wav");
     REQUIRE(std::string_view{parse.getOutFileName()} == "output.wav");
-    REQUIRE(parse.getFilters().empty());
+    REQUIRE(parse.getFilterDescriptors().empty());
 }
 
 TEST_CASE("Filter with numeric parameters")
@@ -73,8 +73,8 @@ TEST_CASE("Filter with numeric parameters")
     auto res = parse.parse(static_cast<int>(vecArgv.size()), argv.data());
     
     REQUIRE(res == ArgsParser::Result::ok);
-    REQUIRE(parse.getFilters().size() == 1);
-    REQUIRE(std::string_view{parse.getFilters()[0].filterName} == "gain");
+    REQUIRE(parse.getFilterDescriptors().size() == 1);
+    REQUIRE(std::string_view{parse.getFilterDescriptors()[0].filterName} == "gain");
 }
 
 TEST_CASE("Negative numbers as filter parameters")
@@ -88,7 +88,7 @@ TEST_CASE("Negative numbers as filter parameters")
     
     REQUIRE(res == ArgsParser::Result::ok);
     // Проверяем, что "-6.5" не был воспринят как опция
-    REQUIRE(parse.getFilters().size() == 1);
+    REQUIRE(parse.getFilterDescriptors().size() == 1);
 }
 
 TEST_CASE("Filters before input/output options")
@@ -102,7 +102,7 @@ TEST_CASE("Filters before input/output options")
     
     REQUIRE(res == ArgsParser::Result::ok);
     REQUIRE(std::string_view{parse.getInFileName()} == "in.wav");
-    REQUIRE(parse.getFilters().size() == 1);
+    REQUIRE(parse.getFilterDescriptors().size() == 1);
 }
 
 // ─────────────────────────────────────────────────────────────

@@ -2,24 +2,23 @@
 #include "ArgsParser.h"
 #include "FilterProducers.h"
 #include "Pipeline.h"
+#include <cstring>
 #include <stdexcept>
+#include <string_view>
 
 FilterProducer
-CmdLineArgs2PipelineConverter::getFilterProducer(const char* filterName)
+CmdLineArgs2PipelineConverter::getFilterProducer(std::string_view filterName)
 {
     if(_producers.contains(filterName))
-        return _producers[std::string_view{
-            filterName}];  // explicit string_view doesn't cause issues
-                           // performance because of copy elision
+        return _producers[filterName];
     return nullptr;
 }
 
-void CmdLineArgs2PipelineConverter::addFilterProducer(const char* filterName,
-                                                      FilterProducer producer)
+void CmdLineArgs2PipelineConverter::addFilterProducer(
+    std::string_view filterName, FilterProducer producer)
 {
-    _producers.emplace(std::string_view{filterName},
-                       producer);  // explicit string_view doesn't cause
-                                   // performance issues because of copy elision
+    _producers.emplace(filterName,
+                       producer);
 }
 
 Pipeline CmdLineArgs2PipelineConverter::createPipeline(
@@ -29,7 +28,10 @@ Pipeline CmdLineArgs2PipelineConverter::createPipeline(
     newPipeline.reserveSize(filterDescriptors.size());
     for(const ArgsParser::FilterDescriptor& descriptor: filterDescriptors)
     {
-        auto producerPtr = getFilterProducer(descriptor.filterName);
+        std::string filterName = descriptor.filterName;
+        if(std::strcmp(descriptor.filterName, "generator") == 0)
+            filterName += descriptor.params[0];
+        auto producerPtr = getFilterProducer(filterName);
         if(producerPtr)
         {
             auto filterPtr = producerPtr(descriptor);

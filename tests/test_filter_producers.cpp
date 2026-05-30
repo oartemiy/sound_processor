@@ -32,8 +32,8 @@ TEST_CASE("nothrow test #1")
                                         "0.2",
                                         "0.4"};
     auto argv = makeArgv(vecArgv);
-    parse.parse(13, argv.data());
-    const auto& descriptors = parse.getFilters();
+    parse.parse(13, argv.data()); // NOLINT
+    const auto& descriptors = parse.getFilterDescriptors();
     REQUIRE(descriptors.size() >= 2);
     CHECK_NOTHROW(FilterProducers::amplFilterCreator(descriptors[0]));
     auto ptr1 = FilterProducers::amplFilterCreator(descriptors[0]);
@@ -62,8 +62,8 @@ TEST_CASE("throw test #1")
                                         "0.2",
                                         "0.4"};
     auto argv = makeArgv(vecArgv);
-    parse.parse(13, argv.data());
-    const auto& descriptors = parse.getFilters();
+    parse.parse(13, argv.data()); // NOLINT
+    const auto& descriptors = parse.getFilterDescriptors();
     REQUIRE(descriptors.size() >= 2);
     CHECK_THROWS(FilterProducers::timestretchFilterCreator(descriptors[0]));
     CHECK_THROWS(FilterProducers::timestretchFilterCreator(descriptors[1]));

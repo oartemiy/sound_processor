@@ -66,6 +66,12 @@ set(FILTERPRODUCERS_SOURCES
     include/FilterProducers.h
 )
 
+set(APPLICATION_SOURCES
+    src/Application.cpp
+
+    include/Application.h
+)
+
 add_compile_options(
     -Wall
     -Wextra
@@ -89,8 +95,10 @@ add_executable(sound_processor_tests
     ${PARSER_SOURCES}
     ${WAVFILE_SOURCES}
     ${FILTER_SOURCES}
+    ${PIPELINE_SOURCES}
     ${CMDLINEARGS2PIPELINECONVERTER_SOURCES}
     ${FILTERPRODUCERS_SOURCES}
+    ${APPLICATION_SOURCES}
 )
 
 
@@ -99,8 +107,10 @@ add_executable(sound_processor
     ${PARSER_SOURCES}
     ${WAVFILE_SOURCES}
     ${FILTER_SOURCES}
+    ${PIPELINE_SOURCES}
     ${CMDLINEARGS2PIPELINECONVERTER_SOURCES}
     ${FILTERPRODUCERS_SOURCES}
+    ${APPLICATION_SOURCES}
 )
 
 target_link_libraries(sound_processor_tests PRIVATE Catch2::Catch2WithMain)

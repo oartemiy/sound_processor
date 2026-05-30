@@ -27,12 +27,12 @@ public:
         }
     };
 
-    Result parse(int argc, char* argv[]);
+    [[nodiscard]] Result parse(int argc, char* argv[]);
 
     const char* getInFileName() const { return _inFileName; }
     const char* getOutFileName() const { return _outFileName; }
 
-    const std::vector<FilterDescriptor>& getFilters() const
+    const std::vector<FilterDescriptor>& getFilterDescriptors() const
     {
         return _filterDescriptors;
     }
