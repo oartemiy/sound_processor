@@ -3,6 +3,8 @@
 
 IFilter::State AmplFilter::apply(Waveform& sound) noexcept
 {
+    if(_ampl < 0)
+        return State::invalidArgs;
     if(sound.data.empty())
         return State::emptyWAV;
     for(std::size_t i = 0; i < sound.data.size(); ++i)

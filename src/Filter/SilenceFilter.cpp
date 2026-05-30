@@ -8,12 +8,14 @@
 
 IFilter::State SilenceFilter::apply(Waveform& sound) noexcept
 {
+    if((std::strcmp(_unit, "ms") != 0 && std::strcmp(_unit, "sec") != 0) ||
+       _start < 0 || _end < _start)
+        return State::invalidArgs;
     // Work in seconds
     auto scaleFactor = (std::strcmp(_unit, "ms") == 0) ? 0.001 : 1.0;
     auto startSec = _start * scaleFactor;
     auto endSec = _end * scaleFactor;
-    if(endSec <= startSec)
-        return State::invalidArgs;
+
     // 1 Frame = Channel size * SamplePerSecond
     try
     {
@@ -50,7 +52,7 @@ IFilter::State SilenceFilter::apply(Waveform& sound) noexcept
     {
         return State::memoryError;
     }
-    catch(...)
+    catch(std::exception& err)
     {
         return State::unknownError;
     }

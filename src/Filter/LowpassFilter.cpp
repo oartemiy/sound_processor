@@ -7,6 +7,8 @@
 
 IFilter::State LowpassFilter::apply(Waveform& sound) noexcept
 {
+    if(_windowSize < 1 || _windowSize % 2 == 0)
+        return State::invalidArgs;
     std::size_t radius = _windowSize / 2;
     std::size_t frames = sound.frameCount();
     if(sound.data.empty())
@@ -55,7 +57,7 @@ IFilter::State LowpassFilter::apply(Waveform& sound) noexcept
     {
         return State::memoryError;
     }
-    catch(...)
+    catch(std::exception& err)
     {
         return State::unknownError;
     }

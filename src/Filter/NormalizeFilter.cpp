@@ -3,6 +3,8 @@
 
 IFilter::State NormalizeFilter::apply(Waveform& sound) noexcept
 {
+    if(_peak > 1 || _peak < 0)
+        return State::invalidArgs;
     auto currentPeak = sound.getAbsMax();
     if(currentPeak == sound.data.end())
         return State::emptyWAV;

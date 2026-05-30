@@ -4,6 +4,8 @@
 
 IFilter::State TimestretchFilter::apply(Waveform& sound) noexcept
 {
+    if(_factor <= 0)
+        return State::invalidArgs;
     std::size_t oldSize = sound.data.size();
     if(oldSize == 0)
         return State::emptyWAV;
@@ -42,7 +44,7 @@ IFilter::State TimestretchFilter::apply(Waveform& sound) noexcept
     {
         return State::memoryError;
     }
-    catch(...)
+    catch(std::exception& err)
     {
         return State::unknownError;
     }

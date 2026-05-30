@@ -4,6 +4,8 @@
 
 IFilter::State SinGenFilter::apply(Waveform& sound) noexcept
 {
+    if(_durationMs < 0 || _frequencyHz < 0)
+        return State::invalidArgs;
     std::size_t newSize =
         std::round(_durationMs / 1000.0 * sound.dwSamplesPerSec);
     try
@@ -22,7 +24,7 @@ IFilter::State SinGenFilter::apply(Waveform& sound) noexcept
     {
         return State::memoryError;
     }
-    catch(...)
+    catch(std::exception& err)
     {
         return State::unknownError;
     }

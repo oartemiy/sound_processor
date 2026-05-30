@@ -47,10 +47,23 @@ set(PIPELINE_SOURCES
     include/Pipeline.h
 )
 
-set(CmdLineArgs2PipelineConverter
+set(CMDLINEARGS2PIPELINECONVERTER_SOURCES
     src/CmdLineArgs2PipelineConverter.cpp
     
     include/CmdLineArgs2PipelineConverter.h    
+)
+
+set(FILTERPRODUCERS_SOURCES
+    src/FilterProducers/amGenFilterCreator.cpp
+    src/FilterProducers/amplFilterCreator.cpp
+    src/FilterProducers/fmGenFilterCreator.cpp
+    src/FilterProducers/lowpassFilterCreator.cpp
+    src/FilterProducers/normalizeFilterCreator.cpp
+    src/FilterProducers/silenceFilterCreator.cpp
+    src/FilterProducers/sinGenFilterCreator.cpp
+    src/FilterProducers/timestretchFilterCreator.cpp
+
+    include/FilterProducers.h
 )
 
 add_compile_options(
@@ -75,6 +88,8 @@ add_executable(sound_processor_tests
     ${PARSER_SOURCES}
     ${WAVFILE_SOURCES}
     ${FILTER_SOURCES}
+    ${CMDLINEARGS2PIPELINECONVERTER_SOURCES}
+    ${FILTERPRODUCERS_SOURCES}
 )
 
 
@@ -83,7 +98,8 @@ add_executable(sound_processor
     ${PARSER_SOURCES}
     ${WAVFILE_SOURCES}
     ${FILTER_SOURCES}
-    
+    ${CMDLINEARGS2PIPELINECONVERTER_SOURCES}
+    ${FILTERPRODUCERS_SOURCES}
 )
 
 target_link_libraries(sound_processor_tests PRIVATE Catch2::Catch2WithMain)
