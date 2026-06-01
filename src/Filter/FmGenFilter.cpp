@@ -34,3 +34,5 @@ IFilter::State FmGenFilter::apply(Waveform& sound) noexcept
     }
     return State::applied;
 }
+
+const char* FmGenFilter::getFilterName() noexcept { return "fm generator"; }

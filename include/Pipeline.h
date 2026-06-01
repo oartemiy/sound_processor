@@ -12,7 +12,7 @@ class Pipeline
 {
 public:
     Pipeline() = default;
-    
+
     Pipeline(const Pipeline&) = delete;
 
     Pipeline(Pipeline&&) = default;
@@ -38,8 +38,12 @@ public:
 
     decltype(auto) operator[](std::size_t idx) const { return _filters[idx]; }
 
+    const char* getErrorFilterName() const { return _errorFilter ? _errorFilter->getFilterName() : ""; }
+
 protected:
     std::vector<std::unique_ptr<Filter>> _filters;
+    // weak unique_ptr
+    Filter* _errorFilter = nullptr;
 };
 
 #endif

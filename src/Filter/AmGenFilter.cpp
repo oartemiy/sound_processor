@@ -34,3 +34,5 @@ IFilter::State AmGenFilter::apply(Waveform& sound) noexcept
     }
     return State::applied;
 }
+
+const char* AmGenFilter::getFilterName() noexcept { return "am generator"; }

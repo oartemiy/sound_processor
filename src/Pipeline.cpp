@@ -9,6 +9,7 @@ Filter::State Pipeline::apply(Waveform& sound) noexcept
         if(auto state = filter->apply(soundCopy);
            state != Filter::State::applied)
         {
+            _errorFilter = filter.get();
             return state;
         }
     }

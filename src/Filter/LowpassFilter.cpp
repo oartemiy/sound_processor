@@ -63,3 +63,5 @@ IFilter::State LowpassFilter::apply(Waveform& sound) noexcept
     }
     return State::applied;
 }
+
+const char* LowpassFilter::getFilterName() noexcept { return "lowpass filter"; }

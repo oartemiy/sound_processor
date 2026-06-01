@@ -50,3 +50,8 @@ IFilter::State TimestretchFilter::apply(Waveform& sound) noexcept
     }
     return State::applied;
 }
+
+const char* TimestretchFilter::getFilterName() noexcept
+{
+    return "timestretch filter";
+}

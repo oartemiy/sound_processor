@@ -10,14 +10,13 @@ int main(int argc, char* argv[])
     }
     catch(std::exception& e)
     {
-        std::cerr << "An exception handled: " << e.what();
-        return -1;	// a proper named const must appear here
+        std::cerr << "An exception handled: " << e.what() << std::endl;
+        return -1;
     }
     catch(...)
     {
-        std::cerr << "An unknown exception";
-        return -2;	// a proper named const must appear here
+        std::cerr << "An unknown exception" << std::endl;
+        return -1;
     }    
-
     return 0;
 }

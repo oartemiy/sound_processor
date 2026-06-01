@@ -15,6 +15,8 @@ public:
 
     State apply(Waveform& sound) noexcept override;
 
+    const char* getFilterName() noexcept override;
+
 protected:
     double _frequencyHz;
     double _durationMs;

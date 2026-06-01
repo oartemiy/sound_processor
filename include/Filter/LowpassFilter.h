@@ -12,6 +12,8 @@ public:
 
     State apply(Waveform& sound) noexcept override;
 
+    const char* getFilterName() noexcept override;
+
 protected:
     std::size_t _windowSize;
 };

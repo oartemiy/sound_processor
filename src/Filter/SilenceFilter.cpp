@@ -58,3 +58,5 @@ IFilter::State SilenceFilter::apply(Waveform& sound) noexcept
     }
     return State::applied;
 }
+
+const char* SilenceFilter::getFilterName() noexcept { return "silence filter"; }

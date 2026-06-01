@@ -30,3 +30,5 @@ IFilter::State SinGenFilter::apply(Waveform& sound) noexcept
     }
     return State::applied;
 }
+
+const char* SinGenFilter::getFilterName() noexcept { return "sin generator"; }

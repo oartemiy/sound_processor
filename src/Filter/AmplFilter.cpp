@@ -11,3 +11,5 @@ IFilter::State AmplFilter::apply(Waveform& sound) noexcept
         sound.setDouble(i, sound.getDouble(i) * _ampl);
     return State::applied;
 }
+
+const char* AmplFilter::getFilterName() noexcept { return "ampl filter"; }

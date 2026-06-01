@@ -46,23 +46,23 @@ void Application::start(int argc, char* argv[])
     {
         auto readRes = WavFile::read(pathIn, sound);
         if(readRes == WavFile::WavError::fileNotFound)
-            throw std::logic_error(std::string{"File: "} + pathIn +
-                                   " does not found.");
+            throw std::logic_error(std::string{"File: \""} + pathIn +
+                                   "\" does not found.");
         else if(readRes == WavFile::WavError::invalidRiff)
-            throw std::logic_error(std::string{"File: "} + pathIn +
-                                   " has invalid RIFF format.");
+            throw std::logic_error(std::string{"File: \""} + pathIn +
+                                   "\" has invalid RIFF format.");
         else if(readRes == WavFile::WavError::missingData)
-            throw std::logic_error(std::string{"File: "} + pathIn +
-                                   " miss DATA chunk.");
+            throw std::logic_error(std::string{"File: \""} + pathIn +
+                                   "\" miss DATA chunk.");
         else if(readRes == WavFile::WavError::missingFmt)
-            throw std::logic_error(std::string{"File: "} + pathIn +
-                                   " miss FMT  chunk");
+            throw std::logic_error(std::string{"File: \""} + pathIn +
+                                   "\" miss FMT  chunk");
         else if(readRes == WavFile::WavError::unsupportedFormat)
-            throw std::logic_error(std::string{"File: "} + pathIn +
-                                   " has unsupported format.");
+            throw std::logic_error(std::string{"File: \""} + pathIn +
+                                   "\" has unsupported format.");
         else if(readRes == WavFile::WavError::sizeMismatch)
-            throw std::logic_error(std::string{"File: "} + pathIn +
-                                   " has size mismatch");
+            throw std::logic_error(std::string{"File: \""} + pathIn +
+                                   "\" has size mismatch");
         else if(readRes == WavFile::WavError::memoryError)
             throw std::logic_error("Memory error occurs while file reading.");
         else if(readRes == WavFile::WavError::ioError)
@@ -76,11 +76,12 @@ void Application::start(int argc, char* argv[])
         _cla2PipelineConverter.createPipeline(_parse.getFilterDescriptors());
 
     auto pipelineRes = pipeline.apply(sound);
-    // TODO: throw more invalid args info
     if(pipelineRes == Filter::State::invalidArgs)
-        throw std::logic_error("Invalid arguments.");
+        throw std::logic_error("Invalid arguments for " +
+                               std::string{pipeline.getErrorFilterName()});
     else if(pipelineRes == Filter::State::emptyWAV)
-        throw std::logic_error(std::string{"File: "} + pathIn + " is empty.");
+        throw std::logic_error(std::string{"File: \""} + pathIn +
+                               "\" is empty.");
     else if(pipelineRes == Filter::State::memoryError)
         throw std::logic_error("Memory error occurs while filters appling.");
     else if(pipelineRes == Filter::State::normalizationFailed)
@@ -88,7 +89,7 @@ void Application::start(int argc, char* argv[])
     else if(pipelineRes == Filter::State::unknownError)
         throw std::logic_error("Unknown error occurs while filters appling.");
     else if(pipelineRes == Filter::State::applied)
-        std::cout << "All filters ere applied." << std::endl;
+        std::cout << "All filters were applied." << std::endl;
 
     auto pathOut = _parse.getOutFileName();
     if(!pathOut)
@@ -100,11 +101,11 @@ void Application::start(int argc, char* argv[])
     auto writeRes = WavFile::write(pathOut, sound);
     // TODO: This error newer occurs
     if(writeRes == WavFile::WavError::fileNotFound)
-        throw std::logic_error(std::string{"File: "} + pathOut +
-                               " does not found.");
+        throw std::logic_error(std::string{"File: \""} + pathOut +
+                               "\" does not found.");
     else if(writeRes == WavFile::WavError::ioError)
         throw std::logic_error("Binary io error occures while file writing.");
     else if(writeRes == WavFile::WavError::ok)
-        std::cout << "All changes save to file: " + std::string{pathOut}
-                  << std::endl;
+        std::cout << "All changes saved to file: \"" + std::string{pathOut}
+                  << "\"" << std::endl;
 }

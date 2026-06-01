@@ -15,3 +15,8 @@ IFilter::State NormalizeFilter::apply(Waveform& sound) noexcept
         sound.setDouble(i, sound.getDouble(i) * scale);
     return State::applied;
 }
+
+const char* NormalizeFilter::getFilterName() noexcept
+{
+    return "normalize filter";
+}
