@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.24.0)
 
 project(sound_processor VERSION 0.1.0 LANGUAGES C CXX)
+add_library(project_options INTERFACE)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -72,18 +73,12 @@ set(APPLICATION_SOURCES
     include/Application.h
 )
 
-add_compile_options(
-    -Wall
-    -Wextra
-    -g
-    -Wimplicit-fallthrough 
-    -O0
-    -Werror=return-type
-    -fsanitize=address
+target_compile_options(project_options INTERFACE
+    $<$<CONFIG:Debug>:-Wall -Wextra -g -Wimplicit-fallthrough -O0 -Werror=return-type -fsanitize=address>
+    $<$<CONFIG:Release>:-Wall -Wextra -O3 -DNDEBUG -Werror=return-type>
 )
-
-add_link_options(
-    -fsanitize=address
+target_link_options(project_options INTERFACE
+    $<$<CONFIG:Debug>:-fsanitize=address>
 )
 
 add_executable(sound_processor_tests 
@@ -113,7 +108,8 @@ add_executable(sound_processor
     ${APPLICATION_SOURCES}
 )
 
-target_link_libraries(sound_processor_tests PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(sound_processor PRIVATE project_options)
+target_link_libraries(sound_processor_tests PRIVATE project_options Catch2::Catch2WithMain)
 
 target_include_directories(sound_processor PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(sound_processor_tests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

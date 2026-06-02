@@ -16,6 +16,22 @@
                 "CMAKE_TOOLCHAIN_FILE": "$penv{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
                 "VCPKG_TARGET_TRIPLET": "$penv{VCPKG_TRIPLET}"
             }
+        },
+        {
+            "name": "release",
+            "displayName": "Release Preset",
+            "description": "Release build with optimizations, using Ninja + vcpkg manifest mode",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_COLOR_DIAGNOSTICS": "ON",
+                "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "OFF",
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "$env{VCPKG_TRIPLET}"
+            }
         }
     ],
     "buildPresets": [
@@ -23,12 +39,24 @@
             "name": "debug",
             "configurePreset": "debug",
             "jobs": 10
+        },
+        {
+            "name": "release",
+            "configurePreset": "release",
+            "jobs": 10
         }
     ],
     "testPresets": [
         {
             "name": "debug",
             "configurePreset": "debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "release",
+            "configurePreset": "release",
             "output": {
                 "outputOnFailure": true
             }
