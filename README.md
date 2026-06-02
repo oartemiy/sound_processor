@@ -43,6 +43,7 @@ bootstrap-vcpkg.bat       # on Windows
 export VCPKG_ROOT=/custom/path/to/vcpkg   # Linux/macOS
 set VCPKG_ROOT=C:\custom\path\to\vcpkg   # Windows (cmd)
 $env:VCPKG_ROOT = "C:\custom\path\to\vcpkg" # PowerShell
+export VCPKG_TRIPLET=arm64-osx  # check your OS
 ```
 
 ### Build steps
