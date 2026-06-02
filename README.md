@@ -6,7 +6,7 @@ A command‑line tool for processing and generating WAV audio files. It supports
 
 - **Filters** – modify an existing signal:
   - `ampl` – multiply amplitude by a factor (with clamping).
-  - `normalize` – scale the signal so the maximum peak reaches a given level (default 1.0 = full scale).
+  - `normalize` – scale the signal so the maximum peak reaches a given level.
   - `silence` – insert silence (zero samples) at a specified interval; the rest of the signal shifts right.
   - `timestretch` – change duration by a factor using linear interpolation.
   - `lowpass` – smooth the signal with a moving‑average window of odd size (border samples are repeated).
