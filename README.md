@@ -10,7 +10,7 @@ A command‑line tool for processing and generating WAV audio files. It supports
   - `silence` – insert silence (zero samples) at a specified interval; the rest of the signal shifts right.
   - `timestretch` – change duration by a factor using linear interpolation.
   - `lowpass` – smooth the signal with a moving‑average window of odd size (border samples are repeated).
-- **Generators** – create a new signal from scratch (the input file is ignored if a generator is used):
+- **Generators** – create a new signal from scratch:
   - `sin` – pure sine wave.
   - `am` – amplitude‑modulated sine wave.
   - `fm` – frequency‑modulated sine wave.
