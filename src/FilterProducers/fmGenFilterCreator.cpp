@@ -2,7 +2,7 @@
 #include "FilterProducers.h"
 
 std::unique_ptr<Filter> FilterProducers::fmGenFilterCreator(
-    const ArgsParser::FilterDescriptor& descriptor)
+    const FilterDescriptor& descriptor)
 {
     if(descriptor.params.size() != 6)
         throw std::logic_error(

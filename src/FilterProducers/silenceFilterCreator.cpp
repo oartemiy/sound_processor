@@ -7,7 +7,7 @@
 #include <string>
 
 std::unique_ptr<Filter> FilterProducers::silenceFilterCreator(
-    const ArgsParser::FilterDescriptor& descriptor)
+    const FilterDescriptor& descriptor)
 {
     if(std::strcmp(descriptor.filterName, "silence") != 0)
         throw std::logic_error("Wrong descriptor for silence filter producer.");

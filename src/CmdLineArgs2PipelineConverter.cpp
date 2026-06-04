@@ -1,5 +1,4 @@
 #include "CmdLineArgs2PipelineConverter.h"
-#include "ArgsParser.h"
 #include "FilterProducers.h"
 #include "Pipeline.h"
 #include <cstring>
@@ -22,11 +21,11 @@ void CmdLineArgs2PipelineConverter::addFilterProducer(
 }
 
 Pipeline CmdLineArgs2PipelineConverter::createPipeline(
-    const std::vector<ArgsParser::FilterDescriptor>& filterDescriptors)
+    const std::vector<FilterDescriptor>& filterDescriptors)
 {
     Pipeline newPipeline;
     newPipeline.reserveSize(filterDescriptors.size());
-    for(const ArgsParser::FilterDescriptor& descriptor: filterDescriptors)
+    for(const FilterDescriptor& descriptor: filterDescriptors)
     {
         std::string filterName = descriptor.filterName;
         if(std::strcmp(descriptor.filterName, "generator") == 0)

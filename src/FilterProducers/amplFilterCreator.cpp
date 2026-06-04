@@ -7,7 +7,7 @@
 #include <string>
 
 std::unique_ptr<Filter> FilterProducers::amplFilterCreator(
-    const ArgsParser::FilterDescriptor& descriptor)
+    const FilterDescriptor& descriptor)
 {
     if(std::strcmp(descriptor.filterName, "ampl") != 0)
         throw std::logic_error("Wrong descriptor for ampl filter producer.");

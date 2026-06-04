@@ -1,30 +1,30 @@
 #ifndef FILTERPRODUCER_H_
 #define FILTERPRODUCER_H_
 
-#include "ArgsParser.h"
+#include "FilterDescriptor.h"
 #include "Filter/Filter.h"
 #include <memory>
 
 // factory function
 namespace FilterProducers {
 std::unique_ptr<Filter>
-amplFilterCreator(const ArgsParser::FilterDescriptor& descriptor);
+amplFilterCreator(const FilterDescriptor& descriptor);
 std::unique_ptr<Filter>
-normalizeFilterCreator(const ArgsParser::FilterDescriptor& descriptor);
+normalizeFilterCreator(const FilterDescriptor& descriptor);
 std::unique_ptr<Filter>
-lowpassFilterCreator(const ArgsParser::FilterDescriptor& descriptor);
+lowpassFilterCreator(const FilterDescriptor& descriptor);
 std::unique_ptr<Filter>
-silenceFilterCreator(const ArgsParser::FilterDescriptor& descriptor);
+silenceFilterCreator(const FilterDescriptor& descriptor);
 std::unique_ptr<Filter>
-timestretchFilterCreator(const ArgsParser::FilterDescriptor& descriptor);
+timestretchFilterCreator(const FilterDescriptor& descriptor);
 std::unique_ptr<Filter>
-sinGenFilterCreator(const ArgsParser::FilterDescriptor& descriptor);
+sinGenFilterCreator(const FilterDescriptor& descriptor);
 std::unique_ptr<Filter>
-amGenFilterCreator(const ArgsParser::FilterDescriptor& descriptor);
+amGenFilterCreator(const FilterDescriptor& descriptor);
 std::unique_ptr<Filter>
-fmGenFilterCreator(const ArgsParser::FilterDescriptor& descriptor);
+fmGenFilterCreator(const FilterDescriptor& descriptor);
 }  // namespace FilterProducers
 
-using FilterProducer = std::unique_ptr<Filter> (*) (const ArgsParser::FilterDescriptor&);
+using FilterProducer = std::unique_ptr<Filter> (*) (const FilterDescriptor&);
 
 #endif

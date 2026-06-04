@@ -12,7 +12,7 @@ class CmdLineArgs2PipelineConverter
 {
 public:
     [[nodiscard]] Pipeline createPipeline(
-        const std::vector<ArgsParser::FilterDescriptor>& filterDescriptors);
+        const std::vector<FilterDescriptor>& filterDescriptors);
 
     void addFilterProducer(std::string_view filterName, FilterProducer producer);
 

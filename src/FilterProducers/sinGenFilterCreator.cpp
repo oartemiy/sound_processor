@@ -6,7 +6,7 @@
 #include <string>
 
 std::unique_ptr<Filter> FilterProducers::sinGenFilterCreator(
-    const ArgsParser::FilterDescriptor& descriptor)
+    const FilterDescriptor& descriptor)
 {
     if(descriptor.params.size() != 3)
         throw std::logic_error(

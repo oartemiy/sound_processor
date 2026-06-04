@@ -2,7 +2,7 @@
 #define ARGSPARSER_H_
 
 #include <cstddef>
-#include <span>
+#include "FilterDescriptor.h"
 #include <vector>
 
 class ArgsParser
@@ -13,18 +13,6 @@ public:
         ok,
         noArgs,
         badArgs
-    };
-
-    struct FilterDescriptor
-    {
-        char* filterName = nullptr;
-        std::span<char*> params;
-
-        FilterDescriptor(char* filterName, char** paramStart,
-                         std::size_t paramSize)
-            : filterName(filterName), params(paramStart, paramSize)
-        {
-        }
     };
 
     [[nodiscard]] Result parse(int argc, char* argv[]);
@@ -38,8 +26,8 @@ public:
     }
 
 private:
-    char* _inFileName = nullptr;
-    char* _outFileName = nullptr;
+    const char* _inFileName = nullptr;
+    const char* _outFileName = nullptr;
     std::vector<FilterDescriptor> _filterDescriptors;
 
     void addCurrentFilter(std::size_t& paramSize, char**& paramStart,

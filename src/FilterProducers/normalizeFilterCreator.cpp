@@ -7,7 +7,7 @@
 #include <string>
 
 std::unique_ptr<Filter> FilterProducers::normalizeFilterCreator(
-    const ArgsParser::FilterDescriptor& descriptor)
+    const FilterDescriptor& descriptor)
 {
     if(std::strcmp(descriptor.filterName, "normalize") != 0)
         throw std::logic_error(
