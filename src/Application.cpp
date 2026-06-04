@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ArgsParser.h"
+#include "Filter/AmplFilter.h"
 #include "Filter/Filter.h"
 #include "FilterProducers.h"
 #include "WavFile.h"
@@ -189,10 +190,9 @@ void Application::start(int argc, char* argv[])
         pathOut = pathIn;
     }
     auto writeRes = WavFile::write(pathOut, sound);
-    // TODO: This error newer occurs
     if(writeRes == WavFile::WavError::fileNotFound)
         throw std::logic_error(std::string{"File: \""} + pathOut +
-                               "\" does not found.");
+                               "\" Can not be opened or created.");
     else if(writeRes == WavFile::WavError::ioError)
         throw std::logic_error("Binary io error occures while file writing.");
     else if(writeRes == WavFile::WavError::ok)

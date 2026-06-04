@@ -5,6 +5,7 @@
 #include "Filter/Filter.h"
 #include <memory>
 
+// factory function
 namespace FilterProducers {
 std::unique_ptr<Filter>
 amplFilterCreator(const ArgsParser::FilterDescriptor& descriptor);

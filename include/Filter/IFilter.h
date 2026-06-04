@@ -16,9 +16,10 @@ public:
         memoryError,
         unknownError
     };
-    
-    virtual ~IFilter() {}
 
+    IFilter() = default;
+    
+    virtual ~IFilter() = default;
 
     [[nodiscard]] virtual State apply(Waveform& sound) noexcept = 0;
 

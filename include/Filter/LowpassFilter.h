@@ -7,8 +7,8 @@ class LowpassFilter: public IFilter
 {
 public:
     LowpassFilter(std::size_t windowSize): _windowSize(windowSize) {}
-
-    ~LowpassFilter() override {}
+    
+    ~LowpassFilter() override = default;
 
     State apply(Waveform& sound) noexcept override;
 

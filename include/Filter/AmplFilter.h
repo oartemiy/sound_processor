@@ -8,7 +8,7 @@ class AmplFilter: public IFilter
 public:
     AmplFilter(double ampl): _ampl(ampl) {}
 
-    ~AmplFilter() override {}
+    ~AmplFilter() override = default;
 
     State apply(Waveform& sound) noexcept override;
 

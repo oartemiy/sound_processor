@@ -14,8 +14,8 @@ public:
           _durationMs(durationMs)
     {
     }
-
-    ~FmGenFilter() override {}
+    
+    ~FmGenFilter() override = default;
 
     State apply(Waveform& sound) noexcept override;
 

@@ -8,7 +8,7 @@ class NormalizeFilter: public IFilter
 public:
     NormalizeFilter(double peak): _peak(peak) {}
 
-    ~NormalizeFilter() override {}
+    ~NormalizeFilter() override = default;
 
     State apply(Waveform& sound) noexcept override;
 

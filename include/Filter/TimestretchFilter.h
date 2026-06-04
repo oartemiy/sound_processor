@@ -7,8 +7,8 @@ class TimestretchFilter: public IFilter
 {
 public:
     TimestretchFilter(double factor): _factor(factor) {}
-
-    ~TimestretchFilter() override {}
+    
+    ~TimestretchFilter() override = default;
 
     State apply(Waveform& sound) noexcept override;
 
@@ -16,6 +16,7 @@ public:
 
 protected:
     double _factor;
+
 };
 
 #endif

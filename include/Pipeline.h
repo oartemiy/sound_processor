@@ -42,7 +42,7 @@ public:
 
 protected:
     std::vector<std::unique_ptr<Filter>> _filters;
-    // weak unique_ptr
+    // weak unique_ptr (std::observer_ptr C++26)
     Filter* _errorFilter = nullptr;
 };
 

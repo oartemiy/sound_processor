@@ -11,7 +11,7 @@ public:
     {
     }
 
-    ~SinGenFilter() override {}
+    ~SinGenFilter() override = default;
 
     State apply(Waveform& sound) noexcept override;
 

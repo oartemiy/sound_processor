@@ -10,8 +10,8 @@ public:
         : _unit(unit), _start(start), _end(end)
     {
     }
-
-    ~SilenceFilter() override {}
+    
+    ~SilenceFilter() override = default;
 
     State apply(Waveform& sound) noexcept override;
 
@@ -21,6 +21,8 @@ protected:
     const char* _unit;
     double _start;
     double _end;
+
+    
 };
 
 #endif

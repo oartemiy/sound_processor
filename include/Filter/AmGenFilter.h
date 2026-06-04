@@ -2,7 +2,9 @@
 #define AMGENFILTER_H_
 
 #include "AbstractGeneratorFilter.h"
+
 #include "Waveform.h"
+
 
 class AmGenFilter: public AbstractGeneratorFilter
 {
@@ -13,8 +15,8 @@ public:
           _modulationHz(modulationHz), _depth(depth), _durationMs(durationMs)
     {
     }
-
-    ~AmGenFilter() override {}
+    
+    ~AmGenFilter() override = default;
 
     State apply(Waveform& sound) noexcept override;
 
@@ -26,6 +28,8 @@ protected:
     double _modulationHz;
     double _depth;
     double _durationMs;
+
+    
 };
 
 #endif

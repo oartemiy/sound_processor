@@ -4,35 +4,36 @@
 #include "Waveform.h"
 #include <cstdint>
 
+namespace __impl { // NOLINT
+struct __attribute__((packed)) RiffHeader
+{
+    std::uint32_t chunkId;
+    std::uint32_t chunkSize;
+    std::uint32_t waveId;
+};
+
+struct __attribute__((packed)) FmtHeader
+{
+    std::uint32_t chunkId;
+    std::uint32_t chunkSize;
+    std::uint16_t wFormatTag;
+    std::uint16_t wChannels;
+    std::uint32_t dwSamplesPerSec;
+    std::uint32_t dwAvgBytesPerSec;
+    std::uint16_t wBlockAlign;
+    std::uint16_t wBitsPerSample;
+};
+
+struct __attribute__((packed)) DataHeader
+{
+    std::uint32_t chunkId;
+    std::uint32_t chuckSize;
+};
+}  // namespace __impl
 
 class WavFile
 {
 public:
-    struct __attribute__((packed)) RiffHeader
-    {
-        std::uint32_t chunkId;
-        std::uint32_t chunkSize;
-        std::uint32_t waveId;
-    };
-
-    struct __attribute__((packed)) FmtHeader
-    {
-        std::uint32_t chunkId;
-        std::uint32_t chunkSize;
-        std::uint16_t wFormatTag;
-        std::uint16_t wChannels;
-        std::uint32_t dwSamplesPerSec;
-        std::uint32_t dwAvgBytesPerSec;
-        std::uint16_t wBlockAlign;
-        std::uint16_t wBitsPerSample;
-    };
-
-    struct __attribute__((packed)) DataHeader
-    {
-        std::uint32_t chunkId;
-        std::uint32_t chuckSize;
-    };
-
     enum class WavError
     {
         ok,

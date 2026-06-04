@@ -12,7 +12,7 @@ WavFile::WavError WavFile::read(const char* path, Waveform& outForm)
     if(!fin.is_open())
         return WavError::fileNotFound;
 
-    RiffHeader riffHdr;
+    __impl::RiffHeader riffHdr;
     fin.read(reinterpret_cast<char*>(&riffHdr), sizeof(riffHdr));
     if(!fin || std::memcmp(&riffHdr.chunkId, "RIFF", 4) != 0 ||
        std::memcmp(&riffHdr.waveId, "WAVE", 4) != 0)
@@ -36,8 +36,8 @@ WavFile::WavError WavFile::read(const char* path, Waveform& outForm)
             fin.seekg(-8, std::ios::cur);  // return to prev 8 bytes
             fin.clear();                   // clear flags
 
-            FmtHeader fmt;
-            if(!fin.read(reinterpret_cast<char*>(&fmt), sizeof(FmtHeader)))
+            __impl::FmtHeader fmt;
+            if(!fin.read(reinterpret_cast<char*>(&fmt), sizeof(__impl::FmtHeader)))
                 return WavError::ioError;
 
             if(fmt.wFormatTag != 1 || fmt.wBitsPerSample != 16)
@@ -109,8 +109,8 @@ WavFile::WavError WavFile::write(const char* path, const Waveform& inForm)
     constexpr static std::uint32_t FMT = 0x20746d66u; // "FMT "
     constexpr static std::uint32_t DATA = 0x61746164u; // "DATA "
 
-    RiffHeader riffHdr = {RIFF, riffSize, WAVE};
-    FmtHeader fmtHdr = {FMT,
+    __impl::RiffHeader riffHdr = {RIFF, riffSize, WAVE};
+    __impl::FmtHeader fmtHdr = {FMT,
                         fmtPayloadSize,
                         1,
                         inForm.wChannels,
@@ -118,11 +118,11 @@ WavFile::WavError WavFile::write(const char* path, const Waveform& inForm)
                         inForm.dwSamplesPerSec * inForm.wChannels * 2,
                         static_cast<std::uint16_t>(inForm.wChannels * 2),
                         16};
-    DataHeader dataHdr = {DATA, dataSize};
+    __impl::DataHeader dataHdr = {DATA, dataSize};
 
-    fout.write(reinterpret_cast<char*>(&riffHdr), sizeof(RiffHeader));
-    fout.write(reinterpret_cast<char*>(&fmtHdr), sizeof(FmtHeader));
-    fout.write(reinterpret_cast<char*>(&dataHdr), sizeof(DataHeader));
+    fout.write(reinterpret_cast<char*>(&riffHdr), sizeof(__impl::RiffHeader));
+    fout.write(reinterpret_cast<char*>(&fmtHdr), sizeof(__impl::FmtHeader));
+    fout.write(reinterpret_cast<char*>(&dataHdr), sizeof(__impl::DataHeader));
 
     fout.write(reinterpret_cast<const char*>(inForm.data.data()), dataSize);
 
