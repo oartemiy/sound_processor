@@ -1,7 +1,6 @@
 #ifndef CMDLINEARGS2PIPELINECONVERTER_H_
 #define CMDLINEARGS2PIPELINECONVERTER_H_
 
-#include "ArgsParser.h"
 #include "FilterProducers.h"
 #include "Pipeline.h"
 #include <map>

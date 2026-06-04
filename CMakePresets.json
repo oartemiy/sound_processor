@@ -4,25 +4,31 @@
         {
             "name": "debug",
             "displayName": "Debug Preset",
-            "description": "Sets Ninja generator, build, vcpkg manifest mode",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "environment": {
+                "VCPKG_ROOT": "~/vcpkg",
+                "VCPKG_TRIPLET": "arm64-osx"
+            },
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
                 "CMAKE_COLOR_DIAGNOSTICS": "ON",
                 "CMAKE_CXX_STANDARD_REQUIRED": "ON",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "CMAKE_TOOLCHAIN_FILE": "$penv{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-                "VCPKG_TARGET_TRIPLET": "$penv{VCPKG_TRIPLET}"
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "$env{VCPKG_TRIPLET}"
             }
         },
         {
             "name": "release",
             "displayName": "Release Preset",
-            "description": "Release build with optimizations, using Ninja + vcpkg manifest mode",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "environment": {
+                "VCPKG_ROOT": "~/vcpkg",
+                "VCPKG_TRIPLET": "arm64-osx"
+            },
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
@@ -31,6 +37,20 @@
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "OFF",
                 "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
                 "VCPKG_TARGET_TRIPLET": "$env{VCPKG_TRIPLET}"
+            }
+        },
+        {
+            "name": "release-universal",
+            "displayName": "Release Universal (macOS)",
+            "description": "Universal binary for Intel and Apple Silicon",
+            "inherits": "release",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            },
+            "cacheVariables": {
+                "CMAKE_OSX_ARCHITECTURES": "arm64;x86_64"
             }
         }
     ],
@@ -43,6 +63,11 @@
         {
             "name": "release",
             "configurePreset": "release",
+            "jobs": 10
+        },
+        {
+            "name": "release-universal",
+            "configurePreset": "release-universal",
             "jobs": 10
         }
     ],

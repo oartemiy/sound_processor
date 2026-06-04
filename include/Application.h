@@ -2,6 +2,7 @@
 #define APPLICATION_H_
 
 #include "CmdLineArgs2PipelineConverter.h"
+#include "ArgsParser.h"
 
 class Application
 {

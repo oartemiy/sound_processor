@@ -22,6 +22,7 @@ A command‑line tool for processing and generating WAV audio files. It supports
 
 - C++20 compiler (GCC, Clang, MSVC)
 - CMake 3.24+
+- [Ninja](https://ninja-build.org) 1.10+ (or other build system, like: [GNU make](https://www.gnu.org/software/make/manual/make.html) and so on)
 - [vcpkg](https://github.com/microsoft/vcpkg) (for deps)
 - Enviroment variables VCPKG_ROOT and VCPKG_TRIPLET  
 - [Catch2](https://github.com/catchorg/Catch2) (for tests)
@@ -46,12 +47,28 @@ $env:VCPKG_ROOT = "C:\custom\path\to\vcpkg" # PowerShell
 export VCPKG_TRIPLET=arm64-osx  # check your OS
 ```
 
+### ... or in CMakePresets.json
+
+```json
+"environment": {
+  "VCPKG_ROOT": "~/vcpkg",
+  "VCPKG_TRIPLET": "arm64-osx"
+},
+```
+
+### Ninja build. Or use other you want
+
+```bash
+sudo apt-get install -y ninja-build  # Linux
+brew install ninja  # macOS
+```
+
 ### Build steps
 
 ```bash
 git clone https://github.com/oartemiy/sound_processor
 cd sound_processor
-cmake --preset=debug  # or release
-cmake --build --preset=debug  # or release
+cmake --preset debug  # or release
+cmake --build --preset debug  # or release
 ./out/build/debug/sound_processor
 ```
