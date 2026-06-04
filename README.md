@@ -1,4 +1,4 @@
-# Sound Processor v1.0.0
+# Sound Processor v1.0.1
 
 A command‑line tool for processing and generating WAV audio files. It supports a chain of filters (amplify, normalize, insert silence, timestretch, lowpass) and generators (sine, AM, FM). The tool reads a WAV file (or uses a generator to create a signal), applies a series of transformations, and writes the result to an output file.
 
