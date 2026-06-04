@@ -3,89 +3,62 @@ name: Release
 on:
   workflow_dispatch:
   push:
-    tags:
-      - 'v*'
+    branches: [ main, master ]
 
 jobs:
-  build:
-    name: ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: windows-latest
-            preset: release
-            exe_name: sound_processor.exe
-            artifact: sound_processor-windows.exe
-          - os: ubuntu-latest
-            preset: release
-            exe_name: sound_processor
-            artifact: sound_processor-linux
-          - os: macos-latest
-            preset: release-universal
-            exe_name: sound_processor
-            artifact: sound_processor-macos-universal
-
+  build-windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Ninja (Windows)
-        if: runner.os == 'Windows'
-        run: choco install ninja
-
-      - name: Install Ninja (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install ninja-build
-
-      - name: Install Ninja (macOS)
-        if: runner.os == 'macOS'
-        run: brew install ninja
-
-      # Sepup vcpkg
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgJsonGlob: 'vcpkg.json'
-
-      # Configure CMake
       - name: Configure CMake
-        run: cmake --preset ${{ matrix.preset }}
-        env:
-          VCPKG_ROOT: ${{ github.workspace }}/vcpkg
-          VCPKG_TRIPLET: ${{ matrix.triplet || '' }}
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: cmake --build --preset ${{ matrix.preset }}
+        run: cmake --build build --config Release
 
-      - name: Locate executable (macOS/Linux)
-        if: runner.os != 'Windows'
-        run: |
-          find out/build/${{ matrix.preset }} -name "${{ matrix.exe_name }}" -type f -exec cp {} . \;
-
-      - name: Locate executable (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          Get-ChildItem -Path out/build/${{ matrix.preset }} -Filter "${{ matrix.exe_name }}" -Recurse | Copy-Item -Destination .
-
-      - name: Upload artifact
+      - name: Upload executable
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact }}
-          path: ${{ matrix.exe_name }}
+          name: sound_processor-windows
+          path: build/Release/sound_processor.exe
 
-  release:
-    name: Create Release
-    needs: build
+  build-linux:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y libcatch2-dev
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Upload executable
+        uses: actions/upload-artifact@v4
         with:
-          path: artifacts
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+          name: sound_processor-linux
+          path: build/sound_processor
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: brew install catch2
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Upload executable
+        uses: actions/upload-artifact@v4
         with:
-          files: artifacts/**/*
-          generate_release_notes: true
+          name: sound_processor-macos
+          path: build/sound_processor
