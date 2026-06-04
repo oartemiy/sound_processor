@@ -1,6 +1,5 @@
 #include "Application.h"
 #include "ArgsParser.h"
-#include "Filter/AmplFilter.h"
 #include "Filter/Filter.h"
 #include "FilterProducers.h"
 #include "WavFile.h"
