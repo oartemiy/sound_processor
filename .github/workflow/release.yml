@@ -1,0 +1,90 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            preset: release
+            exe_name: sound_processor.exe
+            artifact: sound_processor-windows.exe
+          - os: ubuntu-latest
+            preset: release
+            exe_name: sound_processor
+            artifact: sound_processor-linux
+          - os: macos-latest
+            preset: release-universal
+            exe_name: sound_processor
+            artifact: sound_processor-macos-universal
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Ninja (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ninja
+
+      - name: Install Ninja (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install ninja-build
+
+      - name: Install Ninja (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ninja
+
+      # Sepup vcpkg
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: 'vcpkg.json'
+
+      # Configure CMake
+      - name: Configure CMake
+        run: cmake --preset ${{ matrix.preset }}
+        env:
+          VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+          VCPKG_TRIPLET: ${{ matrix.triplet || '' }}
+
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }}
+
+      - name: Locate executable (macOS/Linux)
+        if: runner.os != 'Windows'
+        run: |
+          find out/build/${{ matrix.preset }} -name "${{ matrix.exe_name }}" -type f -exec cp {} . \;
+
+      - name: Locate executable (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Get-ChildItem -Path out/build/${{ matrix.preset }} -Filter "${{ matrix.exe_name }}" -Recurse | Copy-Item -Destination .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.exe_name }}
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          generate_release_notes: true
