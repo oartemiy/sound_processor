@@ -11,7 +11,7 @@ IFilter::State SinGenFilter::apply(Waveform& sound) noexcept
     try
     {
         sound.data = std::vector<std::int16_t>(newSize);
-        constexpr double PI = M_PI;  // NOLINT
+        constexpr double PI = 3.14159265358979323846264338327950288;  // NOLINT
         for(std::size_t i = 0; i < newSize; ++i)
         {
 

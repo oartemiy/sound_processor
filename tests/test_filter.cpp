@@ -319,7 +319,7 @@ TEST_CASE("test SinGenFilter")
     // t1=1/8000=0.000125 -> phase=2*pi*440*0.000125 ≈ 0.3456 rad -> sin≈0.338
     // scaled to int16: 32767*0.338≈11080
     REQUIRE(sound.data[0] == 0);
-    double expected1 = 32767.0 * std::sin(2.0 * M_PI * 440.0 / 8000.0);
+    double expected1 = 32767.0 * std::sin(2.0 * 3.14159265358979323846264338327950288 * 440.0 / 8000.0);
     int16_t val1 = static_cast<int16_t>(std::round(expected1));
     REQUIRE(std::abs(sound.data[1] - val1) <= 1);
     // amplitude should be 1.0 by default? According to spec, sin generator does
