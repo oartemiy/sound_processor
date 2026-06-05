@@ -1,9 +1,13 @@
-name: Release
+name: Build and Release
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main, master ]
+    tags:
+      - 'v*'
+    branches:
+      - main
+      - master
 
 jobs:
   build:
@@ -28,13 +32,7 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: Locate executable (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          Get-ChildItem -Path build -Filter ${{ matrix.exe }} -Recurse | Copy-Item -Destination .
-
-      - name: Locate executable (Unix)
-        if: runner.os != 'Windows'
+      - name: Locate executable
         run: |
           find build -name "${{ matrix.exe }}" -type f -exec cp {} . \;
 
@@ -43,3 +41,10 @@ jobs:
         with:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.exe }}
+
+      - name: Upload to Release (if tagged)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.exe }}
+          generate_release_notes: true

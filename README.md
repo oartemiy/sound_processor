@@ -16,6 +16,21 @@ A command‑line tool for processing and generating WAV audio files. It supports
   - `fm` – frequency‑modulated sine wave.
 - **Multi‑channel support** – all filters (excepting generators) handle mono, stereo, and more channels correctly (each channel is processed independently).
 
+## Download
+
+Pre-built binaries are available on the [Releases](https://github.com/oartemiy/sound_processor/releases) page.
+
+- **Linux**: `sound_processor-linux`
+- **macOS**: `sound_processor-macos`
+
+Make the file executable:
+
+```bash
+chmod +x sound_processor-linux
+xattr -d com.apple.quarantine sound_processor-macos  # macOS
+./sound_processor-linux -i input.wav -o output.wav -f ampl 1.5
+```
+
 ## Building
 
 ### Prerequisites
