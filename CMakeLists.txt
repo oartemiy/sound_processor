@@ -85,13 +85,20 @@ set(APPLICATION_SOURCES
     include/Application.h
 )
 
-target_compile_options(project_options INTERFACE
-    $<$<CONFIG:Debug>:-Wall -Wextra -g -Wimplicit-fallthrough -O0 -Werror=return-type -fsanitize=address>
-    $<$<CONFIG:Release>:-Wall -Wextra -O3 -DNDEBUG -Werror=return-type>
-)
-target_link_options(project_options INTERFACE
-    $<$<CONFIG:Debug>:-fsanitize=address>
-)
+if(MSVC)
+    target_compile_options(project_options INTERFACE
+        $<$<CONFIG:Debug>:/W4 /Zi /Od>
+        $<$<CONFIG:Release>:/W4 /O2 /DNDEBUG>
+    )
+else()
+    target_compile_options(project_options INTERFACE
+        $<$<CONFIG:Debug>:-Wall -Wextra -g -Wimplicit-fallthrough -O0 -Werror=return-type -fsanitize=address>
+        $<$<CONFIG:Release>:-Wall -Wextra -O3 -DNDEBUG -Werror=return-type>
+    )
+    target_link_options(project_options INTERFACE
+        $<$<CONFIG:Debug>:-fsanitize=address>
+    )
+endif()
 
 add_executable(sound_processor_tests 
     # tests/test_arg_parser.cpp
