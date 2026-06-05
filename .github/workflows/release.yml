@@ -1,13 +1,11 @@
-name: Build and Release
+name: Release
 
 on:
   workflow_dispatch:
   push:
+    branches: [ main, master ]
     tags:
       - 'v*'
-    branches:
-      - main
-      - master
 
 jobs:
   build:
@@ -16,12 +14,15 @@ jobs:
     strategy:
       matrix:
         include:
+          - os: windows-latest
+            exe: sound_processor.exe
+            archive: sound_processor-windows.zip
           - os: ubuntu-latest
             exe: sound_processor
-            artifact: sound_processor-linux
+            archive: sound_processor-linux.tar.gz
           - os: macos-latest
             exe: sound_processor
-            artifact: sound_processor-macos
+            archive: sound_processor-macos.tar.gz
 
     steps:
       - uses: actions/checkout@v4
@@ -32,19 +33,29 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: Locate executable
+      - name: Locate executable (Unix)
+        if: runner.os != 'Windows'
         run: |
           find build -name "${{ matrix.exe }}" -type f -exec cp {} . \;
+          chmod +x ${{ matrix.exe }}
+          tar -czf ${{ matrix.archive }} ${{ matrix.exe }}
+
+      - name: Locate executable (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path build -Filter "${{ matrix.exe }}" -Recurse | Copy-Item -Destination .
+          Compress-Archive -Path ${{ matrix.exe }} -DestinationPath ${{ matrix.archive }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact }}
-          path: ${{ matrix.exe }}
+          name: ${{ matrix.archive }}
+          path: ${{ matrix.archive }}
 
-      - name: Upload to Release (if tagged)
+      - name: Upload to Release (only for tags)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ matrix.exe }}
+          files: ${{ matrix.archive }}
           generate_release_notes: true
