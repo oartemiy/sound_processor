@@ -6,8 +6,22 @@ on:
     branches: [ main, master ]
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            exe: sound_processor.exe
+            artifact: sound_processor-windows.exe
+          - os: ubuntu-latest
+            exe: sound_processor
+            artifact: sound_processor-linux
+          - os: macos-latest
+            exe: sound_processor
+            artifact: sound_processor-macos
+
     steps:
       - uses: actions/checkout@v4
 
@@ -17,48 +31,18 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: Upload executable
+      - name: Locate executable (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Get-ChildItem -Path build -Filter ${{ matrix.exe }} -Recurse | Copy-Item -Destination .
+
+      - name: Locate executable (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          find build -name "${{ matrix.exe }}" -type f -exec cp {} . \;
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: sound_processor-windows
-          path: build/Release/sound_processor.exe
-
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y libcatch2-dev
-
-      - name: Configure CMake
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
-
-      - name: Build
-        run: cmake --build build
-
-      - name: Upload executable
-        uses: actions/upload-artifact@v4
-        with:
-          name: sound_processor-linux
-          path: build/sound_processor
-
-  build-macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: brew install catch2
-
-      - name: Configure CMake
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
-
-      - name: Build
-        run: cmake --build build
-
-      - name: Upload executable
-        uses: actions/upload-artifact@v4
-        with:
-          name: sound_processor-macos
-          path: build/sound_processor
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.exe }}

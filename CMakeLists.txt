@@ -8,7 +8,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 enable_testing()
 
-find_package(Catch2 3 REQUIRED)
+find_package(Catch2 3 QUIET)
+if(NOT Catch2_FOUND)
+    message(STATUS "Catch2 not found, downloading via FetchContent...")
+    include(FetchContent)
+    FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.5.2
+    )
+    FetchContent_MakeAvailable(Catch2)
+    if(TARGET Catch2::Catch2WithMain)
+    endif()
+endif()
 
 set(PARSER_SOURCES 
     src/ArgsParser.cpp
