@@ -14,9 +14,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: windows-latest
-            exe: sound_processor.exe
-            archive: sound_processor-windows.zip
           - os: ubuntu-latest
             exe: sound_processor
             archive: sound_processor-linux.tar.gz
@@ -33,19 +30,11 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: Locate executable (Unix)
-        if: runner.os != 'Windows'
+      - name: Locate executable and pack
         run: |
           find build -name "${{ matrix.exe }}" -type f -exec cp {} . \;
           chmod +x ${{ matrix.exe }}
           tar -czf ${{ matrix.archive }} ${{ matrix.exe }}
-
-      - name: Locate executable (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          Get-ChildItem -Path build -Filter "${{ matrix.exe }}" -Recurse | Copy-Item -Destination .
-          Compress-Archive -Path ${{ matrix.exe }} -DestinationPath ${{ matrix.archive }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
