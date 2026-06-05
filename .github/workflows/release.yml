@@ -12,9 +12,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: windows-latest
-            exe: sound_processor.exe
-            artifact: sound_processor-windows.exe
           - os: ubuntu-latest
             exe: sound_processor
             artifact: sound_processor-linux
