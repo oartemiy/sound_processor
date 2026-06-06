@@ -1,16 +1,16 @@
-set(PARSER_SOURCES 
+set(PARSER_SOURCES
     src/ArgsParser.cpp
 
     include/ArgsParser.h
 )
 
-set(WAVFILE_SOURCES 
+set(WAVFILE_SOURCES
     src/WavFile.cpp
 
     include/WavFile.h
 )
 
-set(FILTER_SOURCES 
+set(FILTER_SOURCES
     src/Filter/AmplFilter.cpp
     src/Filter/LowpassFilter.cpp
     src/Filter/NormalizeFilter.cpp
@@ -32,14 +32,14 @@ set(FILTER_SOURCES
 
 set(PIPELINE_SOURCES
     src/Pipeline.cpp
-    
+
     include/Pipeline.h
 )
 
 set(CMDLINEARGS2PIPELINECONVERTER_SOURCES
     src/CmdLineArgs2PipelineConverter.cpp
-    
-    include/CmdLineArgs2PipelineConverter.h    
+
+    include/CmdLineArgs2PipelineConverter.h
 )
 
 set(FILTERPRODUCERS_SOURCES

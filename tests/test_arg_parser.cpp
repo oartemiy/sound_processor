@@ -1,9 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 #include <span>
+#include <string>
 #include <string_view>
 #include <vector>
-#include <string>
 
 #include "ArgsParser.h"
 
@@ -24,13 +24,21 @@ TEST_CASE("Example test: complex pipeline")
 {
     ArgsParser parse;
     std::vector<std::string> vecArgv = {"sound_processor",
-                                        "-i", "input.wav",
-                                        "-o", "output.wav",
-                                        "-f", "ampl", "0.8",
-                                        "-f", "silence", "sec", "0.2", "0.4"};
+                                        "-i",
+                                        "input.wav",
+                                        "-o",
+                                        "output.wav",
+                                        "-f",
+                                        "ampl",
+                                        "0.8",
+                                        "-f",
+                                        "silence",
+                                        "sec",
+                                        "0.2",
+                                        "0.4"};
     auto argv = makeArgv(vecArgv);
     auto res = parse.parse(static_cast<int>(vecArgv.size()), argv.data());
-    
+
     REQUIRE(res == ArgsParser::Result::ok);
     REQUIRE(parse.getFilterDescriptors().size() == 2);
     REQUIRE(parse.getFilterDescriptors()[0].filterName == vecArgv[6].c_str());
@@ -67,25 +75,24 @@ TEST_CASE("Filter with numeric parameters")
 {
     ArgsParser parse;
     std::vector<std::string> vecArgv = {
-        "sound_processor", "-f", "gain", "2.5", "-10", "0.5", "-o", "out.wav"
-    };
+        "sound_processor", "-f", "gain", "2.5", "-10", "0.5", "-o", "out.wav"};
     auto argv = makeArgv(vecArgv);
     auto res = parse.parse(static_cast<int>(vecArgv.size()), argv.data());
-    
+
     REQUIRE(res == ArgsParser::Result::ok);
     REQUIRE(parse.getFilterDescriptors().size() == 1);
-    REQUIRE(std::string_view{parse.getFilterDescriptors()[0].filterName} == "gain");
+    REQUIRE(std::string_view{parse.getFilterDescriptors()[0].filterName} ==
+            "gain");
 }
 
 TEST_CASE("Negative numbers as filter parameters")
 {
     ArgsParser parse;
     std::vector<std::string> vecArgv = {
-        "sound_processor", "-f", "attenuate", "-6.5", "-o", "out.wav"
-    };
+        "sound_processor", "-f", "attenuate", "-6.5", "-o", "out.wav"};
     auto argv = makeArgv(vecArgv);
     auto res = parse.parse(static_cast<int>(vecArgv.size()), argv.data());
-    
+
     REQUIRE(res == ArgsParser::Result::ok);
     // Проверяем, что "-6.5" не был воспринят как опция
     REQUIRE(parse.getFilterDescriptors().size() == 1);
@@ -95,11 +102,11 @@ TEST_CASE("Filters before input/output options")
 {
     ArgsParser parse;
     std::vector<std::string> vecArgv = {
-        "sound_processor", "-f", "eq", "100", "0.5", "-i", "in.wav", "-o", "out.wav"
-    };
+        "sound_processor", "-f", "eq",     "100", "0.5", "-i",
+        "in.wav",          "-o", "out.wav"};
     auto argv = makeArgv(vecArgv);
     auto res = parse.parse(static_cast<int>(vecArgv.size()), argv.data());
-    
+
     REQUIRE(res == ArgsParser::Result::ok);
     REQUIRE(std::string_view{parse.getInFileName()} == "in.wav");
     REQUIRE(parse.getFilterDescriptors().size() == 1);
@@ -111,9 +118,8 @@ TEST_CASE("Filters before input/output options")
 TEST_CASE("Duplicate -i option")
 {
     ArgsParser parse;
-    std::vector<std::string> vecArgv = {
-        "sound_processor", "-i", "a.wav", "-i", "b.wav"
-    };
+    std::vector<std::string> vecArgv = {"sound_processor", "-i", "a.wav", "-i",
+                                        "b.wav"};
     auto argv = makeArgv(vecArgv);
     auto res = parse.parse(static_cast<int>(vecArgv.size()), argv.data());
     REQUIRE(res == ArgsParser::Result::badArgs);
@@ -122,9 +128,8 @@ TEST_CASE("Duplicate -i option")
 TEST_CASE("Duplicate -o option")
 {
     ArgsParser parse;
-    std::vector<std::string> vecArgv = {
-        "sound_processor", "-o", "a.wav", "-o", "b.wav"
-    };
+    std::vector<std::string> vecArgv = {"sound_processor", "-o", "a.wav", "-o",
+                                        "b.wav"};
     auto argv = makeArgv(vecArgv);
     auto res = parse.parse(static_cast<int>(vecArgv.size()), argv.data());
     REQUIRE(res == ArgsParser::Result::badArgs);
@@ -169,7 +174,8 @@ TEST_CASE("Parameter without active filter")
 TEST_CASE("-f followed by another option instead of name")
 {
     ArgsParser parse;
-    std::vector<std::string> vecArgv = {"sound_processor", "-f", "-o", "out.wav"};
+    std::vector<std::string> vecArgv = {"sound_processor", "-f", "-o",
+                                        "out.wav"};
     auto argv = makeArgv(vecArgv);
     auto res = parse.parse(4, argv.data());
     REQUIRE(res == ArgsParser::Result::badArgs);
@@ -181,18 +187,16 @@ TEST_CASE("-f followed by another option instead of name")
 TEST_CASE("Valid numeric formats accepted as filter params", "[numbers]")
 {
     ArgsParser parse;
-    
+
     // Catch2 автоматически запустит тест для каждого значения
-    auto validNum = GENERATE(
-        as<std::string>{}, 
-        "0", "-5", "3.14", "-0.001", ".5", "5.", "100", "-999.99"
-    );
-    
-    std::vector<std::string> cmd = {
-        "sound_processor", "-f", "filter", validNum, "-o", "out.wav"
-    };
+    auto validNum = GENERATE(as<std::string>{}, "0", "-5", "3.14", "-0.001",
+                             ".5", "5.", "100", "-999.99");
+
+    std::vector<std::string> cmd = {"sound_processor", "-f", "filter",
+                                    validNum,          "-o", "out.wav"};
     auto argv = makeArgv(cmd);
-    REQUIRE(parse.parse(static_cast<int>(cmd.size()), argv.data()) == ArgsParser::Result::ok);
+    REQUIRE(parse.parse(static_cast<int>(cmd.size()), argv.data()) ==
+            ArgsParser::Result::ok);
 }
 
 TEST_CASE("Invalid options rejected", "[reject]")
@@ -200,12 +204,12 @@ TEST_CASE("Invalid options rejected", "[reject]")
     ArgsParser parse;
 
     auto invalid = GENERATE(as<std::string>{}, "--long-opt", "-X", "-abc");
-    
-    std::vector<std::string> cmd = {
-        "sound_processor", "-f", "filter", invalid, "-o", "out.wav"
-    };
+
+    std::vector<std::string> cmd = {"sound_processor", "-f", "filter",
+                                    invalid,           "-o", "out.wav"};
     auto argv = makeArgv(cmd);
-    REQUIRE(parse.parse(static_cast<int>(cmd.size()), argv.data()) == ArgsParser::Result::badArgs);
+    REQUIRE(parse.parse(static_cast<int>(cmd.size()), argv.data()) ==
+            ArgsParser::Result::badArgs);
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -214,20 +218,23 @@ TEST_CASE("Invalid options rejected", "[reject]")
 TEST_CASE("Argument order flexibility")
 {
     ArgsParser parse;
-    
-    SECTION("-o before -i") {
-        std::vector<std::string> vecArgv = {
-            "sound_processor", "-o", "out.wav", "-i", "in.wav"
-        };
+
+    SECTION("-o before -i")
+    {
+        std::vector<std::string> vecArgv = {"sound_processor", "-o", "out.wav",
+                                            "-i", "in.wav"};
         auto argv = makeArgv(vecArgv);
-        REQUIRE(parse.parse(static_cast<int>(vecArgv.size()), argv.data()) == ArgsParser::Result::ok);
+        REQUIRE(parse.parse(static_cast<int>(vecArgv.size()), argv.data()) ==
+                ArgsParser::Result::ok);
     }
-    
-    SECTION("Filter between -i and -o") {
+
+    SECTION("Filter between -i and -o")
+    {
         std::vector<std::string> vecArgv = {
-            "sound_processor", "-i", "in.wav", "-f", "blur", "2", "-o", "out.wav"
-        };
+            "sound_processor", "-i", "in.wav", "-f", "blur", "2", "-o",
+            "out.wav"};
         auto argv = makeArgv(vecArgv);
-        REQUIRE(parse.parse(static_cast<int>(vecArgv.size()), argv.data()) == ArgsParser::Result::ok);
+        REQUIRE(parse.parse(static_cast<int>(vecArgv.size()), argv.data()) ==
+                ArgsParser::Result::ok);
     }
 }

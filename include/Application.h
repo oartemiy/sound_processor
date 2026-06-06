@@ -1,8 +1,8 @@
 #ifndef APPLICATION_H_
 #define APPLICATION_H_
 
-#include "CmdLineArgs2PipelineConverter.h"
 #include "ArgsParser.h"
+#include "CmdLineArgs2PipelineConverter.h"
 
 class Application
 {
@@ -11,6 +11,7 @@ public:
 
     // NOTE: May throw exceptions
     void start(int argc, char* argv[]);
+
 protected:
     CmdLineArgs2PipelineConverter _cla2PipelineConverter;
     ArgsParser _parse;

@@ -4,7 +4,7 @@
 #include "Waveform.h"
 #include <cstdint>
 
-namespace __impl { // NOLINT
+namespace __impl {  // NOLINT
 struct __attribute__((packed)) RiffHeader
 {
     std::uint32_t chunkId;

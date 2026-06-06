@@ -1,8 +1,8 @@
 #ifndef ARGSPARSER_H_
 #define ARGSPARSER_H_
 
-#include <cstddef>
 #include "FilterDescriptor.h"
+#include <cstddef>
 #include <vector>
 
 class ArgsParser

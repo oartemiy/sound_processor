@@ -10,10 +10,10 @@ include(cmake/Sources.cmake)
 include(cmake/BuildFlags.cmake)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    include(cmake/Catch2.cmake)
+  include(cmake/Catch2.cmake)
 endif()
 
-add_executable(sound_processor 
+add_executable(sound_processor
     src/main.cpp
 
     ${PARSER_SOURCES}
@@ -27,4 +27,5 @@ add_executable(sound_processor
 
 target_link_libraries(sound_processor PRIVATE project_options)
 
-target_include_directories(sound_processor PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(sound_processor PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/include)

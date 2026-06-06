@@ -1,7 +1,5 @@
 {
-    "name": "sound-processor-tests",
-    "version": "1.0.0",
-    "dependencies": [
-        "catch2"
-    ]
+  "name": "sound-processor-tests",
+  "version": "1.0.0",
+  "dependencies": ["catch2"]
 }

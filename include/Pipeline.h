@@ -38,7 +38,10 @@ public:
 
     decltype(auto) operator[](std::size_t idx) const { return _filters[idx]; }
 
-    const char* getErrorFilterName() const { return _errorFilter ? _errorFilter->getFilterName() : ""; }
+    const char* getErrorFilterName() const
+    {
+        return _errorFilter ? _errorFilter->getFilterName() : "";
+    }
 
 protected:
     std::vector<std::unique_ptr<Filter>> _filters;

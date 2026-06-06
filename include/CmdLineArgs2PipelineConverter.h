@@ -10,10 +10,11 @@
 class CmdLineArgs2PipelineConverter
 {
 public:
-    [[nodiscard]] Pipeline createPipeline(
-        const std::vector<FilterDescriptor>& filterDescriptors);
+    [[nodiscard]] Pipeline
+    createPipeline(const std::vector<FilterDescriptor>& filterDescriptors);
 
-    void addFilterProducer(std::string_view filterName, FilterProducer producer);
+    void addFilterProducer(std::string_view filterName,
+                           FilterProducer producer);
 
     FilterProducer getFilterProducer(std::string_view filterName);
 

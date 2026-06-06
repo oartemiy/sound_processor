@@ -5,8 +5,8 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
-#include <cstring>
 #include <cstdlib>
+#include <cstring>
 #include <vector>
 
 struct Waveform
@@ -45,8 +45,8 @@ struct Waveform
     [[nodiscard]] auto getAbsMax() const noexcept
     {
         return std::max_element(data.begin(), data.end(),
-                                 [](std::int16_t lhs, std::int16_t rhs)
-                                 { return std::abs(lhs) < std::abs(rhs); });
+                                [](std::int16_t lhs, std::int16_t rhs)
+                                { return std::abs(lhs) < std::abs(rhs); });
     }
 
     // ! idx < data.size()

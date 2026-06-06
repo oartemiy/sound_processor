@@ -37,7 +37,8 @@ WavFile::WavError WavFile::read(const char* path, Waveform& outForm)
             fin.clear();                   // clear flags
 
             __impl::FmtHeader fmt;
-            if(!fin.read(reinterpret_cast<char*>(&fmt), sizeof(__impl::FmtHeader)))
+            if(!fin.read(reinterpret_cast<char*>(&fmt),
+                         sizeof(__impl::FmtHeader)))
                 return WavError::ioError;
 
             if(fmt.wFormatTag != 1 || fmt.wBitsPerSample != 16)
@@ -55,7 +56,7 @@ WavFile::WavError WavFile::read(const char* path, Waveform& outForm)
             if(chunkSize % sizeof(std::int16_t) != 0)
                 return WavError::sizeMismatch;
 
-            try // max wav file size is 4 GB
+            try  // max wav file size is 4 GB
             {
                 // https://en.cppreference.com/cpp/container/vector/resize
                 outForm.data.resize(chunkSize / sizeof(std::int16_t));
@@ -104,20 +105,21 @@ WavFile::WavError WavFile::write(const char* path, const Waveform& inForm)
         4 + (8 + fmtPayloadSize) + (8 + dataSize);  // "WAVE" + "fmt" + data
 
     // Big Endian -> write -> Little endian
-    constexpr static std::uint32_t RIFF = 0x46464952u; // "RIFF"
-    constexpr static std::uint32_t WAVE = 0x45564157u; // "WAVE"
-    constexpr static std::uint32_t FMT = 0x20746d66u; // "FMT "
-    constexpr static std::uint32_t DATA = 0x61746164u; // "DATA "
+    constexpr static std::uint32_t RIFF = 0x46464952u;  // "RIFF"
+    constexpr static std::uint32_t WAVE = 0x45564157u;  // "WAVE"
+    constexpr static std::uint32_t FMT = 0x20746d66u;   // "FMT "
+    constexpr static std::uint32_t DATA = 0x61746164u;  // "DATA "
 
     __impl::RiffHeader riffHdr = {RIFF, riffSize, WAVE};
-    __impl::FmtHeader fmtHdr = {FMT,
-                        fmtPayloadSize,
-                        1,
-                        inForm.wChannels,
-                        inForm.dwSamplesPerSec,
-                        inForm.dwSamplesPerSec * inForm.wChannels * 2,
-                        static_cast<std::uint16_t>(inForm.wChannels * 2),
-                        16};
+    __impl::FmtHeader fmtHdr = {
+        FMT,
+        fmtPayloadSize,
+        1,
+        inForm.wChannels,
+        inForm.dwSamplesPerSec,
+        inForm.dwSamplesPerSec * inForm.wChannels * 2,
+        static_cast<std::uint16_t>(inForm.wChannels * 2),
+        16};
     __impl::DataHeader dataHdr = {DATA, dataSize};
 
     fout.write(reinterpret_cast<char*>(&riffHdr), sizeof(__impl::RiffHeader));

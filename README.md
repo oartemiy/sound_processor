@@ -38,7 +38,7 @@ xattr -d com.apple.quarantine sound_processor # macOS
 - CMake 3.24+
 - [Ninja](https://ninja-build.org) 1.10+ (or other build system, like: [GNU make](https://www.gnu.org/software/make/manual/make.html) and so on)
 - [vcpkg](https://github.com/microsoft/vcpkg) (for deps)
-- Enviroment variables VCPKG_ROOT and VCPKG_TRIPLET  
+- Enviroment variables VCPKG_ROOT and VCPKG_TRIPLET
 - [Catch2](https://github.com/catchorg/Catch2) (for tests)
 
 ## Installing prerequisites
