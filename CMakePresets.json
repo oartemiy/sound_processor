@@ -38,20 +38,6 @@
                 "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
                 "VCPKG_TARGET_TRIPLET": "$env{VCPKG_TRIPLET}"
             }
-        },
-        {
-            "name": "release-universal",
-            "displayName": "Release Universal (macOS)",
-            "description": "Universal binary for Intel and Apple Silicon",
-            "inherits": "release",
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Darwin"
-            },
-            "cacheVariables": {
-                "CMAKE_OSX_ARCHITECTURES": "arm64;x86_64"
-            }
         }
     ],
     "buildPresets": [
@@ -63,11 +49,6 @@
         {
             "name": "release",
             "configurePreset": "release",
-            "jobs": 10
-        },
-        {
-            "name": "release-universal",
-            "configurePreset": "release-universal",
             "jobs": 10
         }
     ],
