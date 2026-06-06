@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # enable_testing()
 
-# find_package(Catch2 3 QUIET)
+# find_package(Catch2 3 REQUIRED)
 # if(NOT Catch2_FOUND)
 #     message(STATUS "Catch2 not found, downloading via FetchContent...")
 #     include(FetchContent)
@@ -101,9 +101,9 @@ else()
 endif()
 
 # add_executable(sound_processor_tests 
-#     # tests/test_arg_parser.cpp
-#     # tests/test_wav_file.cpp
-#     # tests/test_filter.cpp
+#     tests/test_arg_parser.cpp
+#     tests/test_wav_file.cpp
+#     tests/test_filter.cpp
 #     tests/test_filter_producers.cpp
 
 #     ${PARSER_SOURCES}

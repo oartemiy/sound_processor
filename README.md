@@ -26,9 +26,8 @@ Pre-built binaries are available on the [Releases](https://github.com/oartemiy/s
 Make the file executable:
 
 ```bash
-chmod +x sound_processor-linux
-xattr -d com.apple.quarantine sound_processor-macos  # macOS
-./sound_processor-linux -i input.wav -o output.wav -f ampl 1.5
+xattr -d com.apple.quarantine sound_processor # macOS
+./sound_processor -i input.wav -o output.wav -f ampl 1.5
 ```
 
 ## Building
