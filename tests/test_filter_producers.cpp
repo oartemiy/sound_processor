@@ -5,7 +5,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <stdexcept>
 
-std::vector<char*> makeArgv(std::vector<std::string>& args)
+static std::vector<char*> makeArgv(std::vector<std::string>& args)
 {
     std::vector<char*> argv;
     argv.reserve(args.size() + 1);

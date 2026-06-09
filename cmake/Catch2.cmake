@@ -15,9 +15,9 @@ if(NOT Catch2_FOUND)
 endif()
 
 add_executable(sound_processor_tests
-    # tests/test_arg_parser.cpp
-    # tests/test_wav_file.cpp
-    # tests/test_filter.cpp
+    tests/test_arg_parser.cpp
+    tests/test_wav_file.cpp
+    tests/test_filter.cpp
     tests/test_filter_producers.cpp
 
     ${PARSER_SOURCES}

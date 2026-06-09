@@ -7,7 +7,7 @@
 
 #include "ArgsParser.h"
 
-std::vector<char*> makeArgv(std::vector<std::string>& args)
+static std::vector<char*> makeArgv(std::vector<std::string>& args)
 {
     std::vector<char*> argv;
     argv.reserve(args.size() + 1);

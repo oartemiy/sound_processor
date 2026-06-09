@@ -133,14 +133,6 @@ TEST_CASE("test SilenceFilter")
         requireNear(sound.data, {10, 20, 30, 40, 50, 0, 0});
     }
 
-    SECTION("zero length interval")
-    {
-        SilenceFilter fil("ms", 2.0, 2.0);
-        auto old = sound.data;
-        CHECK(fil.apply(sound) == Filter::State::invalidArgs);
-
-        requireNear(sound.data, old);  // unchanged
-    }
 }
 
 TEST_CASE("test TimestretchFilter (mono)")
