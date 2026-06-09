@@ -5,7 +5,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <stdexcept>
 
-static std::vector<char*> makeArgv(std::vector<std::string>& args)
+namespace {
+std::vector<char*> makeArgv(std::vector<std::string>& args)
 {
     std::vector<char*> argv;
     argv.reserve(args.size() + 1);
@@ -14,6 +15,7 @@ static std::vector<char*> makeArgv(std::vector<std::string>& args)
     argv.push_back(nullptr);  // POSIX-requirement
     return argv;
 }
+}  // namespace
 
 TEST_CASE("nothrow test #1")
 {
