@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <string>
 
-std::unique_ptr<Filter> FilterProducers::timestretchFilterCreator(
-    const FilterDescriptor& descriptor)
+std::unique_ptr<Filter>
+FilterProducers::timestretchFilterCreator(const FilterDescriptor& descriptor)
 {
     if(std::strcmp(descriptor.filterName, "timestretch") != 0)
         throw std::logic_error(

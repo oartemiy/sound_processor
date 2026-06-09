@@ -6,18 +6,21 @@
 #include <stdexcept>
 #include <string>
 
-std::unique_ptr<Filter> FilterProducers::normalizeFilterCreator(
-    const FilterDescriptor& descriptor)
+std::unique_ptr<Filter>
+FilterProducers::normalizeFilterCreator(const FilterDescriptor& descriptor)
 {
     if(std::strcmp(descriptor.filterName, "normalize") != 0)
         throw std::logic_error(
             "Wrong descriptor for normalize filter producer.");
-    if(descriptor.params.size() != 1)
+    if(descriptor.params.size() > 1)
         throw std::logic_error(
             "Wrong params number for normalize filter producer.");
     try
     {
-        double peak = std::stod(descriptor.params[0]);
+
+        double peak = (descriptor.params.size() == 0)
+                          ? 1.0
+                          : std::stod(descriptor.params[0]);
         return std::make_unique<NormalizeFilter>(peak);
     }
     catch(std::invalid_argument& err)

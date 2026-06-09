@@ -5,8 +5,8 @@
 #include <stdexcept>
 #include <string>
 
-std::unique_ptr<Filter> FilterProducers::sinGenFilterCreator(
-    const FilterDescriptor& descriptor)
+std::unique_ptr<Filter>
+FilterProducers::sinGenFilterCreator(const FilterDescriptor& descriptor)
 {
     if(descriptor.params.size() != 3)
         throw std::logic_error(

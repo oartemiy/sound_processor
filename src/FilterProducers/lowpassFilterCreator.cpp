@@ -7,8 +7,8 @@
 #include <stdexcept>
 #include <string>
 
-std::unique_ptr<Filter> FilterProducers::lowpassFilterCreator(
-    const FilterDescriptor& descriptor)
+std::unique_ptr<Filter>
+FilterProducers::lowpassFilterCreator(const FilterDescriptor& descriptor)
 {
     if(std::strcmp(descriptor.filterName, "lowpass") != 0)
         throw std::logic_error("Wrong descriptor for lowpass filter producer.");

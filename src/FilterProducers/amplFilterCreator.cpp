@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <string>
 
-std::unique_ptr<Filter> FilterProducers::amplFilterCreator(
-    const FilterDescriptor& descriptor)
+std::unique_ptr<Filter>
+FilterProducers::amplFilterCreator(const FilterDescriptor& descriptor)
 {
     if(std::strcmp(descriptor.filterName, "ampl") != 0)
         throw std::logic_error("Wrong descriptor for ampl filter producer.");
@@ -20,8 +20,7 @@ std::unique_ptr<Filter> FilterProducers::amplFilterCreator(
     }
     catch(std::invalid_argument& err)
     {
-        throw std::logic_error(
-            "Error converting arguments for ampl filter.");
+        throw std::logic_error("Error converting arguments for ampl filter.");
     }
     catch(std::exception& err)
     {

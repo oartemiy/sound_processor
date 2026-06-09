@@ -5,8 +5,8 @@
 #include <stdexcept>
 #include <string>
 
-std::unique_ptr<Filter> FilterProducers::amGenFilterCreator(
-    const FilterDescriptor& descriptor)
+std::unique_ptr<Filter>
+FilterProducers::amGenFilterCreator(const FilterDescriptor& descriptor)
 {
     if(descriptor.params.size() != 6)
         throw std::logic_error(
